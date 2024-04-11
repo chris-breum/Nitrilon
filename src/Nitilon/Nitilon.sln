@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitilon.Api", "Nitilon.Api\Nitilon.Api.csproj", "{5C75AC35-4E0E-48C5-9C69-10AE97947668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nitilon.Api", "Nitilon.Api\Nitilon.Api.csproj", "{5C75AC35-4E0E-48C5-9C69-10AE97947668}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nitrilon.Entities", "Nitrilon.Entities\Nitrilon.Entities.csproj", "{AD2EDB72-60AC-493A-8E49-08E67AE3A0B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5C75AC35-4E0E-48C5-9C69-10AE97947668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C75AC35-4E0E-48C5-9C69-10AE97947668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C75AC35-4E0E-48C5-9C69-10AE97947668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD2EDB72-60AC-493A-8E49-08E67AE3A0B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD2EDB72-60AC-493A-8E49-08E67AE3A0B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD2EDB72-60AC-493A-8E49-08E67AE3A0B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD2EDB72-60AC-493A-8E49-08E67AE3A0B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
