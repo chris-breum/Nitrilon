@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Nitrilon.DataAccess;
 using Nitrilon.Entities;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -12,65 +13,7 @@ namespace Nitilon.Api.Controllers
     public class EventController : ControllerBase
     {
 
-        //List<Event> events = new List<Event>
-        //   {
-        //       new Event
-        //       {
-        //           Id = 0,
-        //           Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-        //           Name = "Birthday Party",
-        //           attendees = 5,
-        //           Description = "Birthday party for John"
-        //       },
-        //       new Event
-        //       {
-        //           Id = 1,
-        //           Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)),
-        //           Name = "Wedding",
-        //           attendees = 9,
-        //           Description = "Wedding of John and Jane"
-        //       },
-        //       new Event
-        //       {
-        //           Id = 2,
-        //           Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)),
-        //           Name = "Graduation",
-        //           attendees = 1,
-        //           Description = "Graduation of John"
-        //       }
-        //   };
-        //[HttpPost]
-        //public async Task<ActionResult<List<Event>>> GetAllEvent()
-        //{
-        //    var eventen = events;
-        //    return Ok(eventen);
-        //}
-
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<List<Event>>> GetEvent(int id)
-        //{
-        //    var eventen = events.FirstOrDefault(x => x.Id == id);
-        //    if (eventen == null)
-        //    {
-        //        return NotFound("event not found");
-        //    }
-        //    else 
-        //    {
-        //    return Ok(eventen);
-        //    }
-
-        //}
-        //[HttpPost]
-        //public async Task<ActionResult<List<Event>>> AddEvent(Event newEvent)
-        //{
-
-
-        //    events.Add(newEvent);
-
-        //    var eventen = events;
-        //    return Ok(eventen);
-
-        //}
+     
 
         [HttpGet]
         public IEnumerable<Event> GetAll()
@@ -80,7 +23,7 @@ namespace Nitilon.Api.Controllers
                 new Event
                 {
                     Id = 0,
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                    Date = DateTime.Today,
                     Name = "Birthday Party",
                     Attendees = 5,
                     Description = "Birthday party for John"
@@ -88,7 +31,7 @@ namespace Nitilon.Api.Controllers
                 new Event
                 {
                     Id = 1,
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)),
+                    Date = DateTime.Today,
                     Name = "Wedding",
                     Attendees = 9,
                     Description = "Wedding of John and Jane"
@@ -96,7 +39,7 @@ namespace Nitilon.Api.Controllers
                 new Event
                 {
                     Id = 2,
-                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)),
+                    Date = DateTime.Today,
                     Name = "Graduation",
                     Attendees = 1,
                     Description = "Graduation of John"
@@ -111,10 +54,12 @@ namespace Nitilon.Api.Controllers
         {
             try
             {
+                Repository r = new ();
+                int createdId = r.Save(newEvent);
                 // Do that db stuff
                 return Ok();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                
                 // return a 500 error
