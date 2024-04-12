@@ -24,6 +24,14 @@ namespace Nitilon.Api.Controllers
             return events;
         }
 
+        [HttpGet("{id}")]
+        public Event Get(int id)
+        {
+            Repository r = new();
+            var e = r.GetEvent(id);
+            return e;
+        }
+
         [HttpPost]
 
         public IActionResult Add(Event newEvent)
@@ -33,7 +41,7 @@ namespace Nitilon.Api.Controllers
                 Repository r = new ();
                 int createdId = r.Save(newEvent);
                 // Do that db stuff
-                return Ok();
+                return Ok(createdId);
             }
             catch (Exception e)
             {
@@ -49,16 +57,13 @@ namespace Nitilon.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            try
-            {
+          
                 // Do that db stuff
+               
+                Repository r = new();
+                r.Delete(id);
                 return Ok();
-            }
-            catch (Exception ex)
-            {
-                // return a 500 error
-                return StatusCode(500);
-            }
+           
         }
 
         [HttpPut("{id}")]
@@ -66,12 +71,12 @@ namespace Nitilon.Api.Controllers
         {
             try
             {
-                // Do that db stuff
+                Repository r = new();
+                r.Update(updatedEvent);
                 return Ok();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                // return a 500 error
                 return StatusCode(500);
             }
         }

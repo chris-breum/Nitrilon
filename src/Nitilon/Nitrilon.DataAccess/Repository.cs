@@ -30,28 +30,15 @@ namespace Nitrilon.DataAccess
             //5: Read the results
             while (reader.Read())
             {
-                //Event e = new Event();
-                //e.Id = reader.GetInt32(0);
-                //e.Date = reader.GetDateTime(1);
-                //e.Name = reader.GetString(2);
-                //e.Attendees = reader.GetInt32(3);
-                //e.Description = reader.GetString(4);
-                //events.Add(e);
-
-                int id = Convert.ToInt32(reader["EventId"]);
-                DateTime date = Convert.ToDateTime(reader["Date"]);
-                string name = reader["Name"].ToString();
-                int attendees = Convert.ToInt32(reader["Attendees"]);
-                string description = reader["Description"].ToString();
+                Event e = new Event();
+                e.Id = reader.GetInt32(0);
+                e.Date = reader.GetDateTime(1);
+                e.Name = reader.GetString(2);
+                e.Attendees = reader.GetInt32(3);
+                e.Description = reader.GetString(4);
+                events.Add(e);
 
 
-                Event e = new()
-                {
-                    Id = id,
-                    Date = date,
-                    Name = name,
-                    Attendees = attendees,
-                    Description = description;
 
             }
             connection.Close();
@@ -61,18 +48,44 @@ namespace Nitrilon.DataAccess
 
         }
 
+        public Event GetEvent(int id)
+        {
+            Event e = new Event();
+            string sql = $"SELECT * FROM Events WHERE EventId = {id}";
+            // Do that db stuff
 
+            //1: make a sql connection object
+            SqlConnection connection = new SqlConnection(connectionString);
 
+            //2: make a sqlcommand object
 
+            SqlCommand command = new SqlCommand(sql, connection);
 
+            //3: open the connection
 
+            connection.Open();
+
+            //4: Execute Query
+            SqlDataReader reader = command.ExecuteReader();
+            //5: Read the results
+            while (reader.Read())
+            {
+                e.Id = reader.GetInt32(0);
+                e.Date = reader.GetDateTime(1);
+                e.Name = reader.GetString(2);
+                e.Attendees = reader.GetInt32(3);
+                e.Description = reader.GetString(4);
+            }
+            connection.Close();
+            return e;
+        }
 
 
 
         public int Save(Event newEvent)
         {
-            string sql = $"INSERT INTO Events (Date, Name, Attendees, Description) " +
-              $"VALUES ('{newEvent.Date.ToString("yyyy-MM-dd")}', '{newEvent.Name}',{newEvent.Attendees},'{newEvent.Description}')";
+                int newid = 1;
+            string sql = $"INSERT INTO Events (Date, Name, Attendees, Description) VALUES ('{newEvent.Date.ToString("yyyy-MM-dd")}', '{newEvent.Name}',{newEvent.Attendees},'{newEvent.Description}'); SELECT SCOPE_IDENTITY();";
             // Do that db stuff
 
             //1: make a sql connection object
@@ -88,7 +101,12 @@ namespace Nitrilon.DataAccess
             connection.Open();
             //todo: figure out how to get the id of the new record
             //4 : execute the insert command
-            command.ExecuteNonQuery();
+            //command.ExecuteNonQuery();
+            SqlDataReader sqlDataReader = command.ExecuteReader();
+            while (sqlDataReader.Read())
+            {
+                newid = (int)sqlDataReader.GetDecimal(0);
+            }
 
             //5. close the connection when it is not needed anymore
 
@@ -96,11 +114,66 @@ namespace Nitrilon.DataAccess
 
 
 
-            return -1;
+            return newid;
 
 
         }
+        public int Delete(int id)
+        {
+            string sql = $"DELETE FROM Events WHERE EventId = {id}";
+            int rowsAffected = 0;
+            // Do that db stuff
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    // Add parameter to the command
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    try
+                    {
+                        connection.Open();
+                        rowsAffected = command.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        // Handle the exception here
+                        Console.WriteLine("An error occurred: " + ex.Message);
+                    }
+                }
+                return rowsAffected;
+            }
+
+        }
+        public int Update(Event updatedEvent)
+        {
+            string sql = $"UPDATE Events SET Date = '{updatedEvent.Date.ToString("yyyy-MM-dd")}', Name = '{updatedEvent.Name}', Attendees = {updatedEvent.Attendees}, Description = '{updatedEvent.Description}' WHERE EventId = {updatedEvent.Id}";
+            int rowsAffected = 0;
+            // Do that db stuff
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    // Add parameter to the command
+                    command.Parameters.AddWithValue("@Id", updatedEvent.Id);
+
+                    try
+                    {
+                        connection.Open();
+                        rowsAffected = command.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        // Handle the exception here
+                        Console.WriteLine("An error occurred: " + ex.Message);
+                    }
+                }
+                return rowsAffected;
+            }
+        }
+
 
     }
 }
+
 
