@@ -172,6 +172,93 @@ namespace Nitrilon.DataAccess
             }
         }
 
+        public List<EventRating> GetAllEventRating()
+        {
+            List<EventRating> eventRatings = new List<EventRating>();
+            string sql = "SELECT * FROM EventRating";
+            // Do that db stuff
+
+            //1: make a sql connection object
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            //2: make a sqlcommand object
+
+            SqlCommand command = new SqlCommand(sql, connection);
+
+            //3: open the connection
+
+            connection.Open();
+
+            //4: Execute Query
+            SqlDataReader reader = command.ExecuteReader();
+            //5: Read the results
+            while (reader.Read())
+            {
+                EventRating er = new EventRating();
+                er.Id = reader.GetInt32(0);
+                er.EventId = reader.GetInt32(1);
+                er.RatingId = reader.GetInt32(2);
+                eventRatings.Add(er);
+            }
+            return eventRatings;
+            connection.Close();
+        }
+
+        public List<EventRating> GetEventRating(int id)
+        {
+            List<EventRating> eventRatings = new List<EventRating>(); 
+            string sql = $"SELECT * FROM EventRating WHERE EventId = {id}";
+            // Do that db stuff
+
+            //1: make a sql connection object
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            //2: make a sqlcommand object
+
+            SqlCommand command = new SqlCommand(sql, connection);
+
+            //3: open the connection
+
+            connection.Open();
+
+            //4: Execute Query
+            SqlDataReader reader = command.ExecuteReader();
+            //5: Read the results
+            while (reader.Read())
+            {
+                EventRating er = new EventRating();
+                er.Id = reader.GetInt32(0);
+                er.EventId = reader.GetInt32(1);
+                er.RatingId = reader.GetInt32(2);
+                eventRatings.Add(er);
+            }
+            return eventRatings;
+            connection.Close();
+        }
+
+        public int Save(EventRating newEventRating)
+        {
+            int newid = 1;
+            string sql = $"INSERT INTO EventRating (EventId, RatingId) VALUES ({newEventRating.EventId},{newEventRating.RatingId}); SELECT SCOPE_IDENTITY();";
+            // Do that db stuff
+
+            //1: make a sql connection object
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            //2: make a sqlcommand object
+
+            SqlCommand command = new SqlCommand(sql, connection);
+
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                newid = (int)reader.GetDecimal(0);
+            }
+            return newid;
+            connection.Close();
+        }
+
 
     }
 }
