@@ -18,7 +18,11 @@ klargøringsansvarlig: den der klargøre devicet til at gæsterne kan rate event
 
 04: Den eventansvarlige skal kunne vælge et event for at få vist antallet af bedømmelser i hver bedømmelsesniveau.
 
-05: 
+05: Den klargøringsansvarlige skal få vist de events der kan vælges, når devicet skal klargøres til brug.
+
+06: De events der skal vises til den klargøringsansvarlige, er igangværende og fremtidige events.
+
+07: Når den klargøringsansvarlige har valgt et event, skal systemet viderestille til bedømmelsessiden.
 
 IKKE_FUNKTIONELLE KRAV
 Systemet skal overholde følgende ikke-funktionelle krav:
