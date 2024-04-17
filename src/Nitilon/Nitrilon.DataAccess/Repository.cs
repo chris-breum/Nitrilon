@@ -84,38 +84,47 @@ namespace Nitrilon.DataAccess
 
         public int Save(Event newEvent)
         {
-                int newid = 1;
-            string sql = $"INSERT INTO Events (Date, Name, Attendees, Description) VALUES ('{newEvent.Date.ToString("yyyy-MM-dd")}', '{newEvent.Name}',{newEvent.Attendees},'{newEvent.Description}'); SELECT SCOPE_IDENTITY();";
-            // Do that db stuff
-
-            //1: make a sql connection object
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            //2: make a sqlcommand object
-
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            // todo: try catch block
-            //3: open the connection
-
-            connection.Open();
-            //todo: figure out how to get the id of the new record
-            //4 : execute the insert command
-            //command.ExecuteNonQuery();
-            SqlDataReader sqlDataReader = command.ExecuteReader();
-            while (sqlDataReader.Read())
+            try
             {
-                newid = (int)sqlDataReader.GetDecimal(0);
+
+
+                int newid = 1;
+                string sql = $"INSERT INTO Events (Date, Name, Attendees, Description) VALUES ('{newEvent.Date.ToString("yyyy-MM-dd")}', '{newEvent.Name}',{newEvent.Attendees},'{newEvent.Description}'); SELECT SCOPE_IDENTITY();";
+                // Do that db stuff
+
+                //1: make a sql connection object
+                SqlConnection connection = new SqlConnection(connectionString);
+
+                //2: make a sqlcommand object
+
+                SqlCommand command = new SqlCommand(sql, connection);
+
+                // todo: try catch block
+                //3: open the connection
+
+                connection.Open();
+                //todo: figure out how to get the id of the new record
+                //4 : execute the insert command
+                //command.ExecuteNonQuery();
+                SqlDataReader sqlDataReader = command.ExecuteReader();
+                while (sqlDataReader.Read())
+                {
+                    newid = (int)sqlDataReader.GetDecimal(0);
+                }
+
+                //5. close the connection when it is not needed anymore
+
+                connection.Close();
+
+
+
+                return newid;
             }
-
-            //5. close the connection when it is not needed anymore
-
-            connection.Close();
-
-
-
-            return newid;
-
+            catch (SqlException ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+                return 0;
+            }
 
         }
         public int Delete(int id)
@@ -237,26 +246,36 @@ namespace Nitrilon.DataAccess
         }
 
         public int Save(EventRating newEventRating)
-        {
-            int newid = 1;
-            string sql = $"INSERT INTO EventRating (EventId, RatingId) VALUES ({newEventRating.EventId},{newEventRating.RatingId}); SELECT SCOPE_IDENTITY();";
-            // Do that db stuff
-
-            //1: make a sql connection object
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            //2: make a sqlcommand object
-
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+        { try
             {
-                newid = (int)reader.GetDecimal(0);
+
+
+                int newid = 1;
+                string sql = $"INSERT INTO EventRating (EventId, RatingId) VALUES ({newEventRating.EventId},{newEventRating.RatingId}); SELECT SCOPE_IDENTITY();";
+                // Do that db stuff
+
+                //1: make a sql connection object
+                SqlConnection connection = new SqlConnection(connectionString);
+
+                //2: make a sqlcommand object
+
+                SqlCommand command = new SqlCommand(sql, connection);
+
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    newid = (int)reader.GetDecimal(0);
+                }
+                return newid;
+                connection.Close();
             }
-            return newid;
-            connection.Close();
+
+            catch (SqlException ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+                return 0;
+            }
         }
 
 
