@@ -8,9 +8,37 @@ namespace Nitrilon.Entities
 {
     public class EventRating
     {
-        public int ratingId;
-        public int Id { get; set; }
-        public int EventId { get; set; }
+        private int id;
+        private int eventId;
+        private int ratingId;
+
+        public int Id { get
+            {
+                return id;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Id cannot be less than 0");
+                }
+                id = value;
+            }
+        }
+        public int EventId { get
+            {   
+                return eventId;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("EventId cannot be less than 0");
+                }
+                eventId = value;
+            }
+
+        }
         public int RatingId { 
             get
             {

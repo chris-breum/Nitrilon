@@ -30,17 +30,23 @@ namespace Nitrilon.DataAccess
             //5: Read the results
             while (reader.Read())
             {
-                Event e = new Event();
-                e.Id = reader.GetInt32(0);
-                e.Date = reader.GetDateTime(1);
-                e.Name = reader.GetString(2);
-                e.Attendees = reader.GetInt32(3);
-                e.Description = reader.GetString(4);
+                int idFromDb = reader.GetInt32(0);
+                DateTime dateFromDb = reader.GetDateTime(1);
+                string nameFromDb = reader.GetString(2);
+                int attendeesFromDb = reader.GetInt32(3);
+                string descriptionFromDb = reader.GetString(4);
+                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb);
+                 
                 events.Add(e);
+            };
+                
+
+            
+                
 
 
 
-            }
+            
             connection.Close();
 
 
@@ -48,9 +54,9 @@ namespace Nitrilon.DataAccess
 
         }
 
-        public Event GetEvent(int id)
+        public List<Event> GetEvent(int id)
         {
-            Event e = new Event();
+            List<Event> events = new List<Event>();
             string sql = $"SELECT * FROM Events WHERE EventId = {id}";
             // Do that db stuff
 
@@ -70,14 +76,54 @@ namespace Nitrilon.DataAccess
             //5: Read the results
             while (reader.Read())
             {
-                e.Id = reader.GetInt32(0);
-                e.Date = reader.GetDateTime(1);
-                e.Name = reader.GetString(2);
-                e.Attendees = reader.GetInt32(3);
-                e.Description = reader.GetString(4);
+
+                int idFromDb = reader.GetInt32(0);
+                DateTime dateFromDb = reader.GetDateTime(1);
+                string nameFromDb = reader.GetString(2);
+                int attendeesFromDb = reader.GetInt32(3);
+                string descriptionFromDb = reader.GetString(4);
+                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb);
+
+                events.Add(e);
             }
             connection.Close();
-            return e;
+            return events;
+        }
+
+        public List<Event> GetEventByDate(DateTime date)
+        {
+            List<Event> events = new List<Event>();
+            string sql = $"SELECT * FROM Events WHERE Date >= '{date.ToString("yyyy-MM-dd")}'";
+
+            // Do that db stuff
+
+            //1: make a sql connection object
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            //2: make a sqlcommand object
+
+            SqlCommand command = new SqlCommand(sql, connection);
+
+            //3: open the connection
+
+            connection.Open();
+
+            //4: Execute Query
+            SqlDataReader reader = command.ExecuteReader();
+            //5: Read the results
+            while (reader.Read())
+            {
+                int idFromDb = reader.GetInt32(0);
+                DateTime dateFromDb = reader.GetDateTime(1);
+                string nameFromDb = reader.GetString(2);
+                int attendeesFromDb = reader.GetInt32(3);
+                string descriptionFromDb = reader.GetString(4);
+                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb);
+
+                events.Add(e);
+            }
+            connection.Close();
+            return events;
         }
 
 
@@ -277,6 +323,8 @@ namespace Nitrilon.DataAccess
                 return 0;
             }
         }
+
+       
 
 
     }

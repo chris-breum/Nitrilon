@@ -13,9 +13,9 @@ namespace Nitilon.Api.Controllers
     public class EventController : ControllerBase
     {
 
-     
 
-        [HttpGet]
+
+        [HttpGet("all")]
         public IEnumerable<Event> GetAll()
         {
            Repository r = new();
@@ -24,12 +24,20 @@ namespace Nitilon.Api.Controllers
             return events;
         }
 
-        [HttpGet("{id}")]
-        public Event Get(int id)
+        [HttpGet("id/{id}")]
+        public IEnumerable<Event> Get(int id)
         {
             Repository r = new();
             var e = r.GetEvent(id);
             return e;
+        }
+
+        [HttpGet("date/{date}")]
+        public IEnumerable<Event> GetEventDate(DateTime date)
+        {
+            Repository r = new();
+            var events = r.GetEventByDate(date);
+            return (IEnumerable<Event>)events;
         }
 
         [HttpPost]
