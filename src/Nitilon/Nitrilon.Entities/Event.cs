@@ -7,17 +7,22 @@
       private string name;
         private int attendees;
         private string description;
-
+        private List<Rating> ratings;
       
 
-        public Event(int id, DateTime date, string name, int attendees, string description )
+        public Event(int id, DateTime date, string name, int attendees, string description, List<Rating> ratings )
         {
             Id = id;
             Date = date;
             Name = name;
             Attendees = attendees;
             Description = description;
-           
+            if(ratings == null)
+            {
+                throw new ArgumentNullException(nameof(ratings));
+            }
+            this.ratings = ratings;
+                     
         }
 
         public int Id { get 
@@ -84,6 +89,38 @@
                 
             }
         } 
+       public void Add(Rating ratings)
+        {
+            if(ratings == null)
+            {
+                throw new ArgumentNullException(nameof(ratings));
+            }
+            this.ratings.Add(ratings);
+        }
+
+        /// <summary>
+        /// Returns the average rating of the event
+        /// </summary>
+        /// <returns></returns>
+
+        public double GetAverageRating()
+        {
+            if (ratings.Count > 0)
+            {
+
+                double sum = 0;
+                foreach (Rating rating in ratings)
+                {
+                    sum += rating.Ratingvalue;
+                }
+                return (double)sum / (double)ratings.Count;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
 
     }
 }

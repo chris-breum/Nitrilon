@@ -35,7 +35,8 @@ namespace Nitrilon.DataAccess
                 string nameFromDb = reader.GetString(2);
                 int attendeesFromDb = reader.GetInt32(3);
                 string descriptionFromDb = reader.GetString(4);
-                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb);
+                List<Rating> ratings = new List<Rating>();
+                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb, ratings );
                  
                 events.Add(e);
             };
@@ -82,7 +83,8 @@ namespace Nitrilon.DataAccess
                 string nameFromDb = reader.GetString(2);
                 int attendeesFromDb = reader.GetInt32(3);
                 string descriptionFromDb = reader.GetString(4);
-                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb);
+                List<Rating> ratings = new List<Rating>();
+                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb, ratings);
 
                 events.Add(e);
             }
@@ -118,7 +120,9 @@ namespace Nitrilon.DataAccess
                 string nameFromDb = reader.GetString(2);
                 int attendeesFromDb = reader.GetInt32(3);
                 string descriptionFromDb = reader.GetString(4);
-                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb);
+                List<Rating> ratings = new List<Rating>();
+                //nice job copiletting the code
+                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb, ratings);
 
                 events.Add(e);
             }

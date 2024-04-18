@@ -1,5 +1,5 @@
-const CurrentDate = new Date();
-let APIUrl = "https://localhost:7049/api/Event/date";
+const CurrentDate = new Date().toISOString().split("T")[0];
+let APIUrl = `https://localhost:7049/api/Event/date/${CurrentDate}`;
 
 fetch(APIUrl)
   .then((response) => response.json())
@@ -24,7 +24,9 @@ function createList(data) {
     li.setAttribute("id", itemId);
 
     // Opret teksten, der skal vises (dato og navn)
-    const text = document.createTextNode(`${item.date} - ${item.name}`);
+    const text = document.createTextNode(
+      `${item.date.split("T")[0]} - ${item.name}`
+    );
 
     // Tilføj teksten til li elementet
     li.appendChild(text);
