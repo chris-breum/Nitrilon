@@ -1,7 +1,8 @@
 var RedSmiley = document.querySelector("#redSmiley");
 var YellowSmiley = document.querySelector("#yellowSmiley");
 var GreenSmiley = document.querySelector("#greenSmiley");
-let Event = 1;
+let Event = new URLSearchParams(window.location.search).get("Id");
+console.log(Event);
 let APIUrl = "https://localhost:7049/api/EventRating";
 let feedback = document.querySelector(".feedback");
 let ratings = document.querySelector("#ratings");

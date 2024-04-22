@@ -40,14 +40,7 @@ namespace Nitrilon.DataAccess
                  
                 events.Add(e);
             };
-                
-
-            
-                
-
-
-
-            
+           
             connection.Close();
 
 
@@ -253,14 +246,18 @@ namespace Nitrilon.DataAccess
             //5: Read the results
             while (reader.Read())
             {
-                EventRating er = new EventRating();
-                er.Id = reader.GetInt32(0);
-                er.EventId = reader.GetInt32(1);
-                er.RatingId = reader.GetInt32(2);
+                var idFromDb = reader.GetInt32(0);
+                var eventIdFromDb = reader.GetInt32(1);
+                var ratingIdFromDb = reader.GetInt32(2);
+
+
+                EventRating er = new EventRating(idFromDb, eventIdFromDb, ratingIdFromDb);
+               
                 eventRatings.Add(er);
             }
-            return eventRatings;
             connection.Close();
+            return eventRatings;
+           
         }
 
         public List<EventRating> GetEventRating(int id)
@@ -285,25 +282,26 @@ namespace Nitrilon.DataAccess
             //5: Read the results
             while (reader.Read())
             {
-                EventRating er = new EventRating();
-                er.Id = reader.GetInt32(0);
-                er.EventId = reader.GetInt32(1);
-                er.RatingId = reader.GetInt32(2);
+                var idFromDb = reader.GetInt32(0);
+                var eventIdFromDb = reader.GetInt32(1);
+                var ratingIdFromDb = reader.GetInt32(2);
+
+
+                EventRating er = new EventRating(idFromDb, eventIdFromDb, ratingIdFromDb);
                 eventRatings.Add(er);
             }
-            return eventRatings;
             connection.Close();
+            return eventRatings;
+            
         }
 
         public int Save(EventRating newEventRating)
         { try
             {
-
-
                 int newid = 1;
                 string sql = $"INSERT INTO EventRating (EventId, RatingId) VALUES ({newEventRating.EventId},{newEventRating.RatingId}); SELECT SCOPE_IDENTITY();";
                 // Do that db stuff
-
+               
                 //1: make a sql connection object
                 SqlConnection connection = new SqlConnection(connectionString);
 
@@ -312,13 +310,16 @@ namespace Nitrilon.DataAccess
                 SqlCommand command = new SqlCommand(sql, connection);
 
                 connection.Open();
+
                 SqlDataReader reader = command.ExecuteReader();
+
                 while (reader.Read())
                 {
                     newid = (int)reader.GetDecimal(0);
                 }
-                return newid;
                 connection.Close();
+                return newid;
+                
             }
 
             catch (SqlException ex)

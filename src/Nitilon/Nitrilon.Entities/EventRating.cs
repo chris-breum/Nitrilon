@@ -12,10 +12,16 @@ namespace Nitrilon.Entities
         private int eventId;
         private int ratingId;
 
-        public int Id { get
-            {
-                return id;
-            }
+        public EventRating(int id, int eventId, int ratingId)
+        {
+            Id = id;
+            EventId = eventId;
+            RatingId = ratingId;
+        }
+
+        public int Id
+        {
+            get { return id; }
             set
             {
                 if (value < 0)
@@ -25,10 +31,10 @@ namespace Nitrilon.Entities
                 id = value;
             }
         }
-        public int EventId { get
-            {   
-                return eventId;
-            }
+
+        public int EventId
+        {
+            get { return eventId; }
             set
             {
                 if (value < 0)
@@ -37,21 +43,20 @@ namespace Nitrilon.Entities
                 }
                 eventId = value;
             }
-
         }
-        public int RatingId { 
-            get
-            {
-                return ratingId;
-            }
 
+        public int RatingId
+        {
+            get { return ratingId; }
             set
             {
-                if (ratingId > 3 || ratingId < 0) 
+                if (value > 3 || value < 0)
                 {
-                    throw new ArgumentException("Rating cannot be more than 3");
+                    throw new ArgumentException("Rating cannot be more than 3 or less than 0");
                 }
+                ratingId = value;
             }
-                }
+        }
     }
 }
+

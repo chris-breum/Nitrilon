@@ -46,7 +46,8 @@ namespace Nitilon.Api.Controllers
         {
             try
             {
-                Repository r = new ();
+
+                Repository r = new();
                 int createdId = r.Save(newEvent);
                 // Do that db stuff
                 return Ok(createdId);
@@ -79,6 +80,8 @@ namespace Nitilon.Api.Controllers
         {
             try
             {
+                
+
                 Repository r = new();
                 r.Update(updatedEvent);
                 return Ok();

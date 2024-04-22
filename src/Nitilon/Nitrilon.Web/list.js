@@ -18,10 +18,10 @@ function createList(data) {
     const li = document.createElement("li");
 
     // Opret en unik id for hvert element
-    const itemId = `item-${index}`;
+    const Id = `${item.id}`;
 
     // Tilføj id attribut til li elementet
-    li.setAttribute("id", itemId);
+    // li.setAttribute("id", Id);
 
     // Opret teksten, der skal vises (dato og navn)
     const text = document.createTextNode(
@@ -30,6 +30,12 @@ function createList(data) {
 
     // Tilføj teksten til li elementet
     li.appendChild(text);
+
+    // Tilføj event listener til li elementet
+    li.addEventListener("click", () => {
+      // Gå videre til rating.html med itemid
+      window.location.href = `rating.html?Id=${Id}`;
+    });
 
     // Tilføj li elementet til ul elementet
     ul.appendChild(li);

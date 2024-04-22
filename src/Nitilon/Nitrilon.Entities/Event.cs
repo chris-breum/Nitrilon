@@ -1,4 +1,6 @@
-﻿namespace Nitrilon.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Nitrilon.Entities
 {
     public class Event
     {
@@ -8,7 +10,12 @@
         private int attendees;
         private string description;
         private List<Rating> ratings;
-      
+
+        [JsonConstructor]
+        public Event()
+        {
+                
+        }
 
         public Event(int id, DateTime date, string name, int attendees, string description, List<Rating> ratings )
         {
