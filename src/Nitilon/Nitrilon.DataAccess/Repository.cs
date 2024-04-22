@@ -295,6 +295,9 @@ namespace Nitrilon.DataAccess
             
         }
 
+       
+
+
         public int Save(EventRating newEventRating)
         { try
             {

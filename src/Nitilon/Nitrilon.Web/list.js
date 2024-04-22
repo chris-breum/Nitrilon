@@ -1,5 +1,9 @@
 const CurrentDate = new Date().toISOString().split("T")[0];
-let APIUrl = `https://localhost:7049/api/Event/date/${CurrentDate}`;
+var dag = new Date();
+
+// Trekk fra tre dager
+dag.setDate(dag.getDate() - 3);
+let APIUrl = `https://localhost:7049/api/Event/date/${dag}`;
 
 fetch(APIUrl)
   .then((response) => response.json())

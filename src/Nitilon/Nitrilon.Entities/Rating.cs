@@ -17,6 +17,7 @@ namespace Nitrilon.Entities
             Id = id;
             Ratingvalue = ratingvalue;
             Description = description;
+
         }
 
         public int Id { get => id; set => id = value; }
