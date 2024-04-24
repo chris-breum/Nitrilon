@@ -19,7 +19,7 @@ namespace Nitilon.Api.Controllers
         public IEnumerable<Event> GetAll()
         {
            Repository r = new();
-            var events = r.GetAllEvent();
+            var events = r.GetAllEvents();
 
             return events;
         }

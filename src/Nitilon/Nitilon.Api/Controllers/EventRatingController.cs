@@ -9,21 +9,22 @@ namespace Nitilon.Api.Controllers
     [ApiController]
     public class EventRatingController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<EventRating> GetAll()
-        {
-            Repository r = new();
-            var events = r.GetAllEventRating();
+        //[HttpGet]
+        //public IEnumerable<EventRating> GetAll()
+        //{
+        //    Repository r = new();
+        //    var events = r.GetAllEventRating();
 
-            return events;
-        }
+        //    return events;
+        //}
 
-        [HttpGet("{id}")]
-        public IEnumerable<EventRating> Get(int id)
+        [HttpGet("{eventId}")]
+        
+        public ActionResult<EventRatingData> GetEventRatingDataFor(int eventId)
         {
-            Repository r = new();
-            var e = r.GetEventRating(id);
-            return e;
+            Repository repository = new();
+            EventRatingData eventRatingData = repository.GetEventRatingDataBy(eventId);
+            return Ok(eventRatingData);
         }
 
         [HttpPost]

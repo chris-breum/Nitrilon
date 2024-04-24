@@ -19,7 +19,7 @@ function showFeedback() {
 }
 
 RedSmiley.addEventListener("click", function () {
-  sendToServer(1);
+  sendToServer(3);
 });
 
 YellowSmiley.addEventListener("click", function () {
@@ -27,7 +27,7 @@ YellowSmiley.addEventListener("click", function () {
 });
 
 GreenSmiley.addEventListener("click", function () {
-  sendToServer(3);
+  sendToServer(1);
 });
 
 function sendToServer(e) {

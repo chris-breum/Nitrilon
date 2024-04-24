@@ -13,3 +13,43 @@ body {
 }
 
 /* Your custom styles go here */
+
+section {
+  width: 15%;
+  float: left;
+  padding: 10px;
+  background-color: #8fcd81a5;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: scroll;
+}
+section li {
+  list-style-type: none;
+  padding: 10px;
+  margin: 10px;
+  background-color: #f4e3f7;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: large;
+}
+
+section li:hover {
+  background-color: #55b149;
+  color: white;
+}
+
+section li.active {
+  background-color: #55b149;
+  color: white;
+}
+
+#myChart {
+  width: 85%;
+  max-width: 85%;
+  height: 100vh;
+  max-height: 100vh;
+  min-width: 85%;
+  min-height: 100vh;
+  background-color: #f4e3f7;
+  float: right;
+}

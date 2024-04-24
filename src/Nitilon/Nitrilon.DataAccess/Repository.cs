@@ -3,49 +3,49 @@ using Nitrilon.Entities;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
+using System.Data;
 namespace Nitrilon.DataAccess
 {
     public class Repository
     {
         private string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog = NitrilonDB;Integrated Security = True; Connect Timeout = 30; Encrypt=True;Trust Server Certificate=False;Application Intent = ReadWrite; Multi Subnet Failover=False";
-        public List<Event> GetAllEvent()
+        public List<Event> GetAllEvents()
         {
             List<Event> events = new List<Event>();
-            string sql = "SELECT * FROM Events";
-            // Do that db stuff
 
-            //1: make a sql connection object
+            string sql = $"SELECT * FROM Events;";
+
+            // 1: make a SqlConnection object:
             SqlConnection connection = new SqlConnection(connectionString);
 
-            //2: make a sqlcommand object
-
+            // 2: make a SqlCommand object:
             SqlCommand command = new SqlCommand(sql, connection);
 
-            //3: open the connection
-
+            // TODO: try catchify this:
+            // 3. Open the connection:
             connection.Open();
 
-            //4: Execute Query
+            // 4. Execute query:
             SqlDataReader reader = command.ExecuteReader();
-            //5: Read the results
+
+            // 5. Retrieve data from the data reader:
             while (reader.Read())
             {
-                int idFromDb = reader.GetInt32(0);
-                DateTime dateFromDb = reader.GetDateTime(1);
-                string nameFromDb = reader.GetString(2);
-                int attendeesFromDb = reader.GetInt32(3);
-                string descriptionFromDb = reader.GetString(4);
-                List<Rating> ratings = new List<Rating>();
-                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb, ratings );
-                 
+                int id = Convert.ToInt32(reader["EventId"]);
+                DateTime date = Convert.ToDateTime(reader["Date"]);
+                string name = Convert.ToString(reader["Name"]);
+                int attendees = Convert.ToInt32(reader["Attendees"]);
+                string description = Convert.ToString(reader["Description"]);
+
+                Event e = new(id, name, date, attendees, description);
+
                 events.Add(e);
-            };
-           
+            }
+
+            // 6. Close the connection when it is not needed anymore:
             connection.Close();
 
-
             return events;
-
         }
 
         public List<Event> GetEvent(int id)
@@ -76,8 +76,8 @@ namespace Nitrilon.DataAccess
                 string nameFromDb = reader.GetString(2);
                 int attendeesFromDb = reader.GetInt32(3);
                 string descriptionFromDb = reader.GetString(4);
-                List<Rating> ratings = new List<Rating>();
-                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb, ratings);
+                
+                Event e = new Event(idFromDb, nameFromDb, dateFromDb, attendeesFromDb, descriptionFromDb );
 
                 events.Add(e);
             }
@@ -113,9 +113,9 @@ namespace Nitrilon.DataAccess
                 string nameFromDb = reader.GetString(2);
                 int attendeesFromDb = reader.GetInt32(3);
                 string descriptionFromDb = reader.GetString(4);
-                List<Rating> ratings = new List<Rating>();
+                //List<EventRatingData> ratings = new List<EventRatingData>();
                 //nice job copiletting the code
-                Event e = new Event(idFromDb, dateFromDb, nameFromDb, attendeesFromDb, descriptionFromDb, ratings);
+                Event e = new Event(idFromDb, nameFromDb, dateFromDb,  attendeesFromDb, descriptionFromDb);
 
                 events.Add(e);
             }
@@ -224,78 +224,78 @@ namespace Nitrilon.DataAccess
             }
         }
 
-        public List<EventRating> GetAllEventRating()
-        {
-            List<EventRating> eventRatings = new List<EventRating>();
-            string sql = "SELECT * FROM EventRating";
-            // Do that db stuff
+        //public List<EventRating> GetAllEventRating()
+        //{
+        //    List<EventRating> eventRatings = new List<EventRating>();
+        //    string sql = "SELECT * FROM EventRating";
+        //    // Do that db stuff
 
-            //1: make a sql connection object
-            SqlConnection connection = new SqlConnection(connectionString);
+        //    //1: make a sql connection object
+        //    SqlConnection connection = new SqlConnection(connectionString);
 
-            //2: make a sqlcommand object
+        //    //2: make a sqlcommand object
 
-            SqlCommand command = new SqlCommand(sql, connection);
+        //    SqlCommand command = new SqlCommand(sql, connection);
 
-            //3: open the connection
+        //    //3: open the connection
 
-            connection.Open();
+        //    connection.Open();
 
-            //4: Execute Query
-            SqlDataReader reader = command.ExecuteReader();
-            //5: Read the results
-            while (reader.Read())
-            {
-                var idFromDb = reader.GetInt32(0);
-                var eventIdFromDb = reader.GetInt32(1);
-                var ratingIdFromDb = reader.GetInt32(2);
+        //    //4: Execute Query
+        //    SqlDataReader reader = command.ExecuteReader();
+        //    //5: Read the results
+        //    while (reader.Read())
+        //    {
+        //        var idFromDb = reader.GetInt32(0);
+        //        var eventIdFromDb = reader.GetInt32(1);
+        //        var ratingIdFromDb = reader.GetInt32(2);
 
 
-                EventRating er = new EventRating(idFromDb, eventIdFromDb, ratingIdFromDb);
+        //        EventRating er = new EventRating(idFromDb, eventIdFromDb, ratingIdFromDb);
                
-                eventRatings.Add(er);
-            }
-            connection.Close();
-            return eventRatings;
+        //        eventRatings.Add(er);
+        //    }
+        //    connection.Close();
+        //    return eventRatings;
            
-        }
+        //}
 
-        public List<EventRating> GetEventRating(int id)
+        public EventRatingData GetEventRatingDataBy(int eventId)
         {
-            List<EventRating> eventRatings = new List<EventRating>(); 
-            string sql = $"SELECT * FROM EventRating WHERE EventId = {id}";
-            // Do that db stuff
+            int badRatingCount = 0;
+            int neutralRatingCount = 0;
+            int goodRatingCount = 0;
+            EventRatingData eventRatingData = default;
 
-            //1: make a sql connection object
+            string sql = $"EXEC CountAllowedRatingsForEvent @EventId = {eventId}";
+
+            // 1: make a SqlConnection object:
             SqlConnection connection = new SqlConnection(connectionString);
 
-            //2: make a sqlcommand object
-
+            // 2: make a SqlCommand object:
             SqlCommand command = new SqlCommand(sql, connection);
 
-            //3: open the connection
-
+            // TODO: try catchify this:
+            // 3. Open the connection:
             connection.Open();
 
-            //4: Execute Query
+            // 4. Execute query:
             SqlDataReader reader = command.ExecuteReader();
-            //5: Read the results
+
+            // 5. Retrieve data from the data reader:
             while (reader.Read())
             {
-                var idFromDb = reader.GetInt32(0);
-                var eventIdFromDb = reader.GetInt32(1);
-                var ratingIdFromDb = reader.GetInt32(2);
-
-
-                EventRating er = new EventRating(idFromDb, eventIdFromDb, ratingIdFromDb);
-                eventRatings.Add(er);
+                badRatingCount = Convert.ToInt32(reader["RatingId3Count"]);
+                neutralRatingCount = Convert.ToInt32(reader["RatingId2Count"]);
+                goodRatingCount = Convert.ToInt32(reader["RatingId1Count"]);
+                eventRatingData = new(badRatingCount, neutralRatingCount, goodRatingCount);
             }
             connection.Close();
-            return eventRatings;
-            
+
+            return eventRatingData;
         }
 
-       
+
 
 
         public int Save(EventRating newEventRating)
@@ -332,7 +332,41 @@ namespace Nitrilon.DataAccess
             }
         }
 
-       
+        public (int, int, int) GetRatingsFor(Event ev)
+        {
+            // 1: make a SqlConnection object:
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            // 2: make a SqlCommand object:
+            SqlCommand command = new SqlCommand("CountAllowedRatingsForEvent", connection);
+
+            connection.Open();
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@EventId", ev.Id);
+            int ratingId1Count = 0, ratingId2Count = 0, ratingId3Count = 0;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    ratingId1Count = Convert.ToInt32(reader["RatingId1Count"]);
+                    ratingId2Count = Convert.ToInt32(reader["RatingId2Count"]);
+                    ratingId3Count = Convert.ToInt32(reader["RatingId3Count"]);
+
+                    Console.WriteLine($"RatingId 1 count: {ratingId1Count}");
+                    Console.WriteLine($"RatingId 2 count: {ratingId2Count}");
+                    Console.WriteLine($"RatingId 3 count: {ratingId3Count}");
+                }
+                else
+                {
+                    Console.WriteLine("No data found for the specified EventId.");
+                }
+            }
+
+            return (ratingId1Count, ratingId2Count, ratingId3Count);
+        }
+
+
+
 
 
     }
