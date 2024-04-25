@@ -15,9 +15,10 @@ body {
 h1 {
   font-size: 2rem;
   font-weight: 600;
-  color: #f4e3f7;
+  color: #dfdedd;
   margin-bottom: 1rem;
   text-align: center;
+  font-size: xxx-large;
 }
 main {
   display: flex;
@@ -43,7 +44,7 @@ section img {
 
 .feedback {
   display: none;
-  background-color: #dddddd;
+  background-color: #dfdedd;
   width: 80%;
   height: 60%;
   position: absolute;

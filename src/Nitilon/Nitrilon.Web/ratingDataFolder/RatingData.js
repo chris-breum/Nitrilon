@@ -88,14 +88,14 @@ function createChart(happy, neutral, sad) {
             (value) => (value / (happy + neutral + sad)) * 100
           ),
           backgroundColor: [
-            "rgba(0, 255, 0, 0.8)", // Green for glad
-            "rgba(255, 255, 0, 0.8)", // Yellow for neutral
-            "rgba(255, 0, 0, 0.8)", // Red for sur
+            "rgba(40, 204, 55, 0.6)", // Green for glad
+            "rgba(242, 203, 4, 0.6)", // Yellow for neutral
+            "rgba(235, 8, 27, 0.6)", // Red for sur
           ],
           borderColor: [
-            "rgba(0, 255, 0, 1)",
-            "rgba(255, 255, 0, 1)",
-            "rgba(255, 0, 0, 1)",
+            "rgba(40, 204, 55, 1)",
+            "rgba(242, 203, 4, 1)",
+            "rgba(235, 8, 27, 1)",
           ],
           borderWidth: 1,
         },
