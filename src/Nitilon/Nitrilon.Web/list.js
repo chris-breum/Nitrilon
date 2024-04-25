@@ -1,8 +1,7 @@
-const CurrentDate = new Date().toISOString().split("T")[0];
-var dag = new Date();
-
 // Trekk fra tre dager
-dag.setDate(dag.getDate() - 3);
+dag = new Date(new Date().setDate(new Date().getDate() - 3))
+  .toISOString()
+  .split("T")[0];
 let APIUrl = `https://localhost:7049/api/Event/date/${dag}`;
 
 fetch(APIUrl)
@@ -18,7 +17,7 @@ function createList(data) {
   const listContainer = document.getElementById("list-container");
   const ul = document.createElement("ul");
 
-  data.forEach((item, index) => {
+  data.forEach((item) => {
     const li = document.createElement("li");
 
     // Opret en unik id for hvert element

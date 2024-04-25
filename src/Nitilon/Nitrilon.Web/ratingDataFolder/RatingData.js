@@ -28,35 +28,47 @@ fetch("https://localhost:7049/api/Event/all")
 // Function to find ratings by event ID
 function findRatingsByEventId(eventId) {
   // Fetch ratings from API
-  let happy = 0;
-  let neutral = 0;
-  let sad = 0;
-  fetch(`https://localhost:7049/api/EventRating/${eventId}`)
-    .then((response) => response.json())
-    .then((ratings) => {
-      // Process the ratings
-      ratings.forEach((rating) => {
-        // Do something with each rating
-        console.log(rating);
-        if (rating.ratingId === 1) {
-          happy++;
-        } else if (rating.ratingId === 2) {
-          neutral++;
-        } else if (rating.ratingId === 3) {
-          sad++;
-        }
-      });
-
-      // Create chart after processing ratings
-      createChart(happy, neutral, sad);
-      console.log(happy, neutral, sad);
+  let goodRatingCount = 0;
+  let neutralRatingCount = 0;
+  let badRatingCount = 0;
+  fetch(`https://localhost:7049/api/EventRating?eventId=${eventId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Anmodningen mislykkedes.");
+      }
+      return response.json();
     })
+
+    .then((data) => {
+      // Nu har du data tilgængelig i JavaScript
+      var badRatingCount = data.badRatingCount;
+      var neutralRatingCount = data.neutralRatingCount;
+      var goodRatingCount = data.goodRatingCount;
+
+      // Gør noget med disse værdier her
+      createChart(goodRatingCount, neutralRatingCount, badRatingCount);
+    })
+
     .catch((error) => {
-      console.error("Error fetching ratings:", error);
+      console.error("Fejl ved hentning af ratingdata:", error);
     });
 }
 
 // Function to create a chart
+/**
+ * Creates a chart using Chart.js based on the provided happy, neutral, and sad values.
+ *
+ * @param {number} happy - The number of happy values.
+ * @param {number} neutral - The number of neutral values.
+ * @param {number} sad - The number of sad values.
+ */
+/**
+ * Creates a chart using Chart.js based on the provided happy, neutral, and sad values.
+ *
+ * @param {number} happy - The number of happy values.
+ * @param {number} neutral - The number of neutral values.
+ * @param {number} sad - The number of sad values.
+ */
 function createChart(happy, neutral, sad) {
   // Create a chart using Chart.js
 
@@ -68,20 +80,22 @@ function createChart(happy, neutral, sad) {
   myChart = new Chart(ctx, {
     type: "bar",
     data: {
-      labels: ["glad ", "neutral ", "sur "],
+      labels: ["Glad - " + happy, "Neutral - " + neutral, "Sur - " + sad],
       datasets: [
         {
-          label: "Værdi",
-          data: [happy, neutral, sad],
+          label: "procent",
+          data: [happy, neutral, sad].map(
+            (value) => (value / (happy + neutral + sad)) * 100
+          ),
           backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
+            "rgba(0, 255, 0, 0.8)", // Green for glad
+            "rgba(255, 255, 0, 0.8)", // Yellow for neutral
+            "rgba(255, 0, 0, 0.8)", // Red for sur
           ],
           borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(75, 192, 192, 1)",
+            "rgba(0, 255, 0, 1)",
+            "rgba(255, 255, 0, 1)",
+            "rgba(255, 0, 0, 1)",
           ],
           borderWidth: 1,
         },
@@ -91,8 +105,29 @@ function createChart(happy, neutral, sad) {
       scales: {
         y: {
           beginAtZero: true,
+          ticks: {
+            callback: function (value) {
+              return value + "%";
+            },
+            color: "white",
+            font: {
+              size: 14, // Skriftstørrelse for y-aksen
+            },
+          },
+        },
+        x: {
+          ticks: {
+            color: "white",
+            font: {
+              size: 14, // Skriftstørrelse for x-aksen
+            },
+          },
         },
       },
+      layout: {
+        maintainAspectRatio: false,
+      },
+
       plugins: {
         legend: {
           display: false,
@@ -100,12 +135,13 @@ function createChart(happy, neutral, sad) {
         tooltip: {
           callbacks: {
             label: function (context) {
+              var totalCount = happy + neutral + sad;
               var label = context.dataset.label || "";
               if (label) {
                 label += ": ";
               }
               if (context.parsed.y !== null) {
-                label += context.parsed.y;
+                label = context.parsed.y.toFixed(2) + "%";
               }
               return label;
             },
@@ -114,4 +150,20 @@ function createChart(happy, neutral, sad) {
       },
     },
   });
+
+  // Display the count of each value
+
+  var totalCount = happy + neutral + sad;
+  var countSection = document.createElement("div");
+  countSection.style.color = "white"; // Set the text color to white
+  countSection.textContent =
+    "Antal: Glad - " +
+    happy +
+    ", Neutral - " +
+    neutral +
+    ", Sur - " +
+    sad +
+    ", Total - " +
+    totalCount;
+  document.body.appendChild(countSection);
 }

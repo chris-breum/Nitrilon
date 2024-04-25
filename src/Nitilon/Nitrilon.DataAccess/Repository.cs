@@ -6,9 +6,17 @@ using System;
 using System.Data;
 namespace Nitrilon.DataAccess
 {
+    /// <summary>
+    /// Represents a repository for accessing and manipulating events data.
+    /// </summary>
     public class Repository
     {
         private string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog = NitrilonDB;Integrated Security = True; Connect Timeout = 30; Encrypt=True;Trust Server Certificate=False;Application Intent = ReadWrite; Multi Subnet Failover=False";
+
+        /// <summary>
+        /// Retrieves all events from the database.
+        /// </summary>
+        /// <returns>A list of events.</returns>
         public List<Event> GetAllEvents()
         {
             List<Event> events = new List<Event>();
@@ -48,6 +56,11 @@ namespace Nitrilon.DataAccess
             return events;
         }
 
+        /// <summary>
+        /// Retrieves a specific event from the database based on the event ID.
+        /// </summary>
+        /// <param name="id">The ID of the event to retrieve.</param>
+        /// <returns>The event with the specified ID.</returns>
         public List<Event> GetEvent(int id)
         {
             List<Event> events = new List<Event>();
@@ -76,8 +89,8 @@ namespace Nitrilon.DataAccess
                 string nameFromDb = reader.GetString(2);
                 int attendeesFromDb = reader.GetInt32(3);
                 string descriptionFromDb = reader.GetString(4);
-                
-                Event e = new Event(idFromDb, nameFromDb, dateFromDb, attendeesFromDb, descriptionFromDb );
+
+                Event e = new Event(idFromDb, nameFromDb, dateFromDb, attendeesFromDb, descriptionFromDb);
 
                 events.Add(e);
             }
@@ -85,6 +98,11 @@ namespace Nitrilon.DataAccess
             return events;
         }
 
+        /// <summary>
+        /// Retrieves events from the database based on the specified date or later.
+        /// </summary>
+        /// <param name="date">The date to filter events.</param>
+        /// <returns>A list of events.</returns>
         public List<Event> GetEventByDate(DateTime date)
         {
             List<Event> events = new List<Event>();
@@ -115,7 +133,7 @@ namespace Nitrilon.DataAccess
                 string descriptionFromDb = reader.GetString(4);
                 //List<EventRatingData> ratings = new List<EventRatingData>();
                 //nice job copiletting the code
-                Event e = new Event(idFromDb, nameFromDb, dateFromDb,  attendeesFromDb, descriptionFromDb);
+                Event e = new Event(idFromDb, nameFromDb, dateFromDb, attendeesFromDb, descriptionFromDb);
 
                 events.Add(e);
             }
@@ -123,14 +141,15 @@ namespace Nitrilon.DataAccess
             return events;
         }
 
-
-
+        /// <summary>
+        /// Saves a new event to the database.
+        /// </summary>
+        /// <param name="newEvent">The event to save.</param>
+        /// <returns>The ID of the newly saved event.</returns>
         public int Save(Event newEvent)
         {
             try
             {
-
-
                 int newid = 1;
                 string sql = $"INSERT INTO Events (Date, Name, Attendees, Description) VALUES ('{newEvent.Date.ToString("yyyy-MM-dd")}', '{newEvent.Name}',{newEvent.Attendees},'{newEvent.Description}'); SELECT SCOPE_IDENTITY();";
                 // Do that db stuff
@@ -159,8 +178,6 @@ namespace Nitrilon.DataAccess
 
                 connection.Close();
 
-
-
                 return newid;
             }
             catch (SqlException ex)
@@ -168,8 +185,13 @@ namespace Nitrilon.DataAccess
                 Console.WriteLine("An error occurred: " + ex.Message);
                 return 0;
             }
-
         }
+
+        /// <summary>
+        /// Deletes an event from the database based on the event ID.
+        /// </summary>
+        /// <param name="id">The ID of the event to delete.</param>
+        /// <returns>The number of rows affected.</returns>
         public int Delete(int id)
         {
             string sql = $"DELETE FROM Events WHERE EventId = {id}";
@@ -195,8 +217,13 @@ namespace Nitrilon.DataAccess
                 }
                 return rowsAffected;
             }
-
         }
+
+        /// <summary>
+        /// Updates an existing event in the database.
+        /// </summary>
+        /// <param name="updatedEvent">The updated event.</param>
+        /// <returns>The number of rows affected.</returns>
         public int Update(Event updatedEvent)
         {
             string sql = $"UPDATE Events SET Date = '{updatedEvent.Date.ToString("yyyy-MM-dd")}', Name = '{updatedEvent.Name}', Attendees = {updatedEvent.Attendees}, Description = '{updatedEvent.Description}' WHERE EventId = {updatedEvent.Id}";
@@ -224,42 +251,11 @@ namespace Nitrilon.DataAccess
             }
         }
 
-        //public List<EventRating> GetAllEventRating()
-        //{
-        //    List<EventRating> eventRatings = new List<EventRating>();
-        //    string sql = "SELECT * FROM EventRating";
-        //    // Do that db stuff
-
-        //    //1: make a sql connection object
-        //    SqlConnection connection = new SqlConnection(connectionString);
-
-        //    //2: make a sqlcommand object
-
-        //    SqlCommand command = new SqlCommand(sql, connection);
-
-        //    //3: open the connection
-
-        //    connection.Open();
-
-        //    //4: Execute Query
-        //    SqlDataReader reader = command.ExecuteReader();
-        //    //5: Read the results
-        //    while (reader.Read())
-        //    {
-        //        var idFromDb = reader.GetInt32(0);
-        //        var eventIdFromDb = reader.GetInt32(1);
-        //        var ratingIdFromDb = reader.GetInt32(2);
-
-
-        //        EventRating er = new EventRating(idFromDb, eventIdFromDb, ratingIdFromDb);
-               
-        //        eventRatings.Add(er);
-        //    }
-        //    connection.Close();
-        //    return eventRatings;
-           
-        //}
-
+        /// <summary>
+        /// Retrieves the event rating data for a specific event.
+        /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <returns>The event rating data.</returns>
         public EventRatingData GetEventRatingDataBy(int eventId)
         {
             int badRatingCount = 0;
@@ -295,16 +291,19 @@ namespace Nitrilon.DataAccess
             return eventRatingData;
         }
 
-
-
-
+        /// <summary>
+        /// Saves a new event rating to the database.
+        /// </summary>
+        /// <param name="newEventRating">The event rating to save.</param>
+        /// <returns>The ID of the newly saved event rating.</returns>
         public int Save(EventRating newEventRating)
-        { try
+        {
+            try
             {
                 int newid = 1;
                 string sql = $"INSERT INTO EventRating (EventId, RatingId) VALUES ({newEventRating.EventId},{newEventRating.RatingId}); SELECT SCOPE_IDENTITY();";
                 // Do that db stuff
-               
+
                 //1: make a sql connection object
                 SqlConnection connection = new SqlConnection(connectionString);
 
@@ -322,7 +321,7 @@ namespace Nitrilon.DataAccess
                 }
                 connection.Close();
                 return newid;
-                
+
             }
 
             catch (SqlException ex)
@@ -332,6 +331,11 @@ namespace Nitrilon.DataAccess
             }
         }
 
+        /// <summary>
+        /// Retrieves the ratings count for a specific event.
+        /// </summary>
+        /// <param name="ev">The event to retrieve ratings count for.</param>
+        /// <returns>A tuple containing the counts of each rating.</returns>
         public (int, int, int) GetRatingsFor(Event ev)
         {
             // 1: make a SqlConnection object:
@@ -364,11 +368,6 @@ namespace Nitrilon.DataAccess
 
             return (ratingId1Count, ratingId2Count, ratingId3Count);
         }
-
-
-
-
-
     }
 }
 

@@ -9,17 +9,12 @@ namespace Nitilon.Api.Controllers
     [ApiController]
     public class EventRatingController : ControllerBase
     {
-        //[HttpGet]
-        //public IEnumerable<EventRating> GetAll()
-        //{
-        //    Repository r = new();
-        //    var events = r.GetAllEventRating();
-
-        //    return events;
-        //}
-
-        [HttpGet("{eventId}")]
-        
+        /// <summary>
+        /// Retrieves the event rating data for a specific event.
+        /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <returns>The event rating data.</returns>
+        [HttpGet]
         public ActionResult<EventRatingData> GetEventRatingDataFor(int eventId)
         {
             Repository repository = new();
@@ -27,6 +22,11 @@ namespace Nitilon.Api.Controllers
             return Ok(eventRatingData);
         }
 
+        /// <summary>
+        /// Adds a new event rating.
+        /// </summary>
+        /// <param name="newEventRating">The new event rating to add.</param>
+        /// <returns>The ID of the created event rating.</returns>
         [HttpPost]
         public IActionResult Add(EventRating newEventRating)
         {
@@ -44,5 +44,6 @@ namespace Nitilon.Api.Controllers
                 return StatusCode(500);
             }
         }
+
     }
 }
