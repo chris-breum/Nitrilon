@@ -11,6 +11,7 @@ namespace Nitrilon.DataAccess
     /// </summary>
     public class Repository
     {
+      
         private string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog = NitrilonDB;Integrated Security = True; Connect Timeout = 30; Encrypt=True;Trust Server Certificate=False;Application Intent = ReadWrite; Multi Subnet Failover=False";
 
         /// <summary>
@@ -368,6 +369,9 @@ namespace Nitrilon.DataAccess
 
             return (ratingId1Count, ratingId2Count, ratingId3Count);
         }
+
+
+
     }
 }
 

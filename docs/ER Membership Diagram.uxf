@@ -52,7 +52,7 @@ id : int {PK}
 PhoneNumber : NvarChar(12)
 Email : NvarChar(128)
 *Date :Date*
-*Membership : int {FK}*
+*MembershipId : int {FK}*
 
 
 
