@@ -371,7 +371,91 @@ namespace Nitrilon.DataAccess
         }
 
 
+        // member
 
+
+        public int AddMember(Member newMember)
+        {
+            try
+            {
+                int newid = 1;
+                string sql = $"INSERT INTO Members ( Name, PhoneNumber, Email, Date, MembershipId) VALUES ('{newMember.Name}', '{newMember.PhoneNumber}', '{newMember.Date.ToString("yyyy-MM-dd")}','{newMember.Membership}'); SELECT SCOPE_IDENTITY();";
+                // Do that db stuff
+
+                //1: make a sql connection object
+                SqlConnection connection = new SqlConnection(connectionString);
+
+                //2: make a sqlcommand object
+
+                SqlCommand command = new SqlCommand(sql, connection);
+
+                // todo: try catch block
+                //3: open the connection
+
+                connection.Open();
+                //todo: figure out how to get the id of the new record
+                //4 : execute the insert command
+                //command.ExecuteNonQuery();
+                SqlDataReader sqlDataReader = command.ExecuteReader();
+                while (sqlDataReader.Read())
+                {
+                    newid = (int)sqlDataReader.GetDecimal(0);
+                }
+
+                //5. close the connection when it is not needed anymore
+
+                connection.Close();
+
+                return newid;
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+                return 0;
+            }
+        }
+
+        public List<Member> GetAllMembers()
+        {
+            List<Member> member = new List<Member>();
+
+            string sql = $"SELECT * FROM Members;";
+
+            // 1: make a SqlConnection object:
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            // 2: make a SqlCommand object:
+            SqlCommand command = new SqlCommand(sql, connection);
+
+            // TODO: try catchify this:
+            // 3. Open the connection:
+            connection.Open();
+
+            // 4. Execute query:
+            SqlDataReader reader = command.ExecuteReader();
+
+            // 5. Retrieve data from the data reader:
+            while (reader.Read())
+            {
+                int id = Convert.ToInt32(reader["MemberId"]);
+                string name = Convert.ToString(reader["Name"]);
+                string phoneNumber = Convert.ToString(reader["PhoneNumber"]);
+                DateTime date = Convert.ToDateTime(reader["Date"]);
+                string email = Convert.ToString(reader["Email"]);
+                Membership membership = new Membership(Convert.ToInt32(reader["MembershipId"]), "MembershipType", "Description");
+
+
+
+                Member e = new Member(id, name, phoneNumber, email, date, membership);
+
+                member.Add(e);
+            }
+
+            // 6. Close the connection when it is not needed anymore:
+            connection.Close();
+
+            return member;
+        }
     }
 }
 

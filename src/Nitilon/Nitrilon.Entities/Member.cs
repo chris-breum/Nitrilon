@@ -13,11 +13,11 @@ namespace Nitrilon.Entities
         private string phoneNumber;
         private string email;
         private DateTime date;
-       private Membership membership;
+        private Membership membership;
 
 
 
-        public Member(int memberId, string name, string phoneNumber, string email, DateTime date, Membership membershipId,  Membership membership)
+        public Member(int memberId, string name, string phoneNumber, string email, DateTime date, Membership membership)
         {
             MemberId = memberId;
             Name = name;
