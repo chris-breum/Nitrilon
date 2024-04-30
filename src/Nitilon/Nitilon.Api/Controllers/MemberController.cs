@@ -27,5 +27,21 @@ namespace Nitilon.Api.Controllers
             var members = r.GetAllMembers();
             return members;
         }
+
+        [HttpGet("{name}")]
+        public IEnumerable<Member> Get(string name)
+        {
+            Repository r = new Repository();
+            var m = r.GetMember(name);
+            return m;
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            Repository r = new Repository();
+            r.DeleteMember(id);
+            return Ok();
+        }
     }
 }

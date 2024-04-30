@@ -419,7 +419,7 @@ namespace Nitrilon.DataAccess
         {
             List<Member> member = new List<Member>();
 
-            string sql = $"SELECT * FROM Members;";
+            string sql = $"SELECT        dbo.Members.*, dbo.MembershipTypes.membershipType, dbo.MembershipTypes.Description\r\nFROM            dbo.Members INNER JOIN\r\n       dbo.MembershipTypes ON dbo.Members.MembershipId = dbo.MembershipTypes.MembershipId";
 
             // 1: make a SqlConnection object:
             SqlConnection connection = new SqlConnection(connectionString);
@@ -440,21 +440,83 @@ namespace Nitrilon.DataAccess
                 int id = Convert.ToInt32(reader["MemberId"]);
                 string name = Convert.ToString(reader["Name"]);
                 string phoneNumber = Convert.ToString(reader["PhoneNumber"]);
-                DateTime date = Convert.ToDateTime(reader["Date"]);
                 string email = Convert.ToString(reader["Email"]);
-                Membership membership = new Membership(Convert.ToInt32(reader["MembershipId"]), "MembershipType", "Description");
+                DateTime date = Convert.ToDateTime(reader["Date"]);
+                Membership membership = new Membership(Convert.ToInt32(reader["MembershipId"]), Convert.ToString(reader["MembershipType"]), Convert.ToString(reader["Description"]));
 
+                Member m = new(id, name, phoneNumber, email, date, membership);
 
-
-                Member e = new Member(id, name, phoneNumber, email, date, membership);
-
-                member.Add(e);
+                member.Add(m);
             }
 
             // 6. Close the connection when it is not needed anymore:
             connection.Close();
 
             return member;
+        }
+
+        public List<Member> GetMember(string name)
+        {
+            List<Member> member = new List<Member>();
+            string sql = $"SELECT        dbo.Members.*, dbo.MembershipTypes.membershipType, dbo.MembershipTypes.Description\r\nFROM            dbo.Members INNER JOIN\r\n       dbo.MembershipTypes ON dbo.Members.MembershipId = dbo.MembershipTypes.MembershipId WHERE Name = {name}";
+            // Do that db stuff
+
+            //1: make a sql connection object
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            //2: make a sqlcommand object
+
+            SqlCommand command = new SqlCommand(sql, connection);
+
+            //3: open the connection
+
+            connection.Open();
+
+            //4: Execute Query
+            SqlDataReader reader = command.ExecuteReader();
+            //5: Read the results
+            while (reader.Read())
+            {
+
+                int idFromDb = reader.GetInt32(0);
+                string nameFromDb = reader.GetString(1);
+                string phoneNumberFromDb = reader.GetString(2);
+                string emailFromDb = reader.GetString(3);
+                DateTime dateFromDb = reader.GetDateTime(4);
+                Membership membership = new Membership(Convert.ToInt32(reader["MembershipId"]), Convert.ToString(reader["MembershipType"]), Convert.ToString(reader["Description"]));
+
+                Member m = new Member(idFromDb, nameFromDb, phoneNumberFromDb, emailFromDb, dateFromDb, membership);
+
+                member.Add(m);
+            }
+            connection.Close();
+            return member;
+        }
+        public int DeleteMember(int id)
+        {
+            string sql = $"DELETE FROM Members WHERE MemberId = {id}";
+            int rowsAffected = 0;
+            // Do that db stuff
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    // Add parameter to the command
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    try
+                    {
+                        connection.Open();
+                        rowsAffected = command.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        // Handle the exception here
+                        Console.WriteLine("An error occurred: " + ex.Message);
+                    }
+                }
+                return rowsAffected;
+            }
         }
     }
 }
