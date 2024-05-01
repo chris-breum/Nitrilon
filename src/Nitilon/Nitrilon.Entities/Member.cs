@@ -9,7 +9,7 @@ namespace Nitrilon.Entities
 {
     public class Member
     {
-        public readonly DateTime EarliestPossibleEvent = new DateTime(2018, 1, 1);
+        public readonly DateTime EarliestPossibleEvent = new(2018, 1, 1);
         private int memberId;
         private string name;
         private string phoneNumber;
@@ -46,7 +46,7 @@ namespace Nitrilon.Entities
                 ArgumentOutOfRangeException.ThrowIfLessThan(value.Length, 8);
                 if (PhoneNumber != value)
                 {
-                    PhoneNumber = value;
+                    phoneNumber = value;
                 }
             }
         }

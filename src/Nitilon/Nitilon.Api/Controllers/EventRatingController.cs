@@ -17,7 +17,7 @@ namespace Nitilon.Api.Controllers
         [HttpGet]
         public ActionResult<EventRatingData> GetEventRatingDataFor(int eventId)
         {
-            Repository repository = new();
+            EventRepository repository = new();
             EventRatingData eventRatingData = repository.GetEventRatingDataBy(eventId);
             return Ok(eventRatingData);
         }
@@ -32,12 +32,12 @@ namespace Nitilon.Api.Controllers
         {
             try
             {
-                Repository r = new();
+                EventRepository r = new();
                 int createdId = r.Save(newEventRating);
                 // Do that db stuff
                 return Ok(createdId);
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 // return a 500 error
                 //return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");

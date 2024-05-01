@@ -19,7 +19,7 @@ namespace Nitilon.Api.Controllers
         [HttpGet("all")]
         public IEnumerable<Event> GetAll()
         {
-            Repository r = new Repository();
+            EventRepository r = new();
             var events = r.GetAllEvents();
 
             return events;
@@ -33,7 +33,7 @@ namespace Nitilon.Api.Controllers
         [HttpGet("id/{id}")]
         public IEnumerable<Event> Get(int id)
         {
-            Repository r = new Repository();
+            EventRepository r = new ();
             var e = r.GetEvent(id);
             return e;
         }
@@ -46,7 +46,7 @@ namespace Nitilon.Api.Controllers
         [HttpGet("date/{date}")]
         public IEnumerable<Event> GetEventDate(DateTime date)
         {
-            Repository r = new Repository();
+            EventRepository r = new ();
             var events = r.GetEventByDate(date);
             return events;
         }
@@ -61,12 +61,12 @@ namespace Nitilon.Api.Controllers
         {
             try
             {
-                Repository r = new Repository();
+                EventRepository r = new ();
                 int createdId = r.Save(newEvent);
                 // Do that db stuff
                 return Ok(createdId);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // return a 500 error
                 //return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
@@ -82,7 +82,7 @@ namespace Nitilon.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            Repository r = new Repository();
+            EventRepository r = new ();
             r.Delete(id);
             return Ok();
         }
@@ -97,11 +97,11 @@ namespace Nitilon.Api.Controllers
         {
             try
             {
-                Repository r = new Repository();
+                EventRepository r = new ();
                 r.Update(updatedEvent);
                 return Ok();
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 return StatusCode(500);
             }

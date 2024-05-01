@@ -3,7 +3,7 @@
     public class Event
     {
         #region Fields and constants
-        public readonly DateTime EarliestPossibleEvent = new DateTime(2018, 1, 1);
+        public readonly DateTime EarliestPossibleEvent = new(2018, 1, 1);
         private int id;
         private string name;
         private DateTime date;

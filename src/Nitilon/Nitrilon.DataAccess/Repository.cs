@@ -1,524 +1,56 @@
 ﻿using Microsoft.Data.SqlClient;
-using Nitrilon.Entities;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System;
-using System.Data;
+
 namespace Nitrilon.DataAccess
 {
-    /// <summary>
-    /// Represents a repository for accessing and manipulating events data.
-    /// </summary>
     public class Repository
     {
-      
-        private string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog = NitrilonDB;Integrated Security = True; Connect Timeout = 30; Encrypt=True;Trust Server Certificate=False;Application Intent = ReadWrite; Multi Subnet Failover=False";
+        protected const string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=NitrilonDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        private SqlConnection connection;
 
-        /// <summary>
-        /// Retrieves all events from the database.
-        /// </summary>
-        /// <returns>A list of events.</returns>
-        public List<Event> GetAllEvents()
+        public Repository()
         {
-            List<Event> events = new List<Event>();
-
-            string sql = $"SELECT * FROM Events;";
-
-            // 1: make a SqlConnection object:
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            // 2: make a SqlCommand object:
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            // TODO: try catchify this:
-            // 3. Open the connection:
-            connection.Open();
-
-            // 4. Execute query:
-            SqlDataReader reader = command.ExecuteReader();
-
-            // 5. Retrieve data from the data reader:
-            while (reader.Read())
+            if (!CanConnect())
             {
-                int id = Convert.ToInt32(reader["EventId"]);
-                DateTime date = Convert.ToDateTime(reader["Date"]);
-                string name = Convert.ToString(reader["Name"]);
-                int attendees = Convert.ToInt32(reader["Attendees"]);
-                string description = Convert.ToString(reader["Description"]);
-
-                Event e = new(id, name, date, attendees, description);
-
-                events.Add(e);
+                throw new Exception("Cannot connect to the database");
             }
-
-            // 6. Close the connection when it is not needed anymore:
-            connection.Close();
-
-            return events;
         }
 
-        /// <summary>
-        /// Retrieves a specific event from the database based on the event ID.
-        /// </summary>
-        /// <param name="id">The ID of the event to retrieve.</param>
-        /// <returns>The event with the specified ID.</returns>
-        public List<Event> GetEvent(int id)
+        protected void CloseConnection()
         {
-            List<Event> events = new List<Event>();
-            string sql = $"SELECT * FROM Events WHERE EventId = {id}";
-            // Do that db stuff
-
-            //1: make a sql connection object
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            //2: make a sqlcommand object
-
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            //3: open the connection
-
-            connection.Open();
-
-            //4: Execute Query
-            SqlDataReader reader = command.ExecuteReader();
-            //5: Read the results
-            while (reader.Read())
+            if (connection != null && connection.State != System.Data.ConnectionState.Closed)
             {
-
-                int idFromDb = reader.GetInt32(0);
-                DateTime dateFromDb = reader.GetDateTime(1);
-                string nameFromDb = reader.GetString(2);
-                int attendeesFromDb = reader.GetInt32(3);
-                string descriptionFromDb = reader.GetString(4);
-
-                Event e = new Event(idFromDb, nameFromDb, dateFromDb, attendeesFromDb, descriptionFromDb);
-
-                events.Add(e);
+                connection.Close();
             }
-            connection.Close();
-            return events;
         }
 
-        /// <summary>
-        /// Retrieves events from the database based on the specified date or later.
-        /// </summary>
-        /// <param name="date">The date to filter events.</param>
-        /// <returns>A list of events.</returns>
-        public List<Event> GetEventByDate(DateTime date)
+        protected SqlDataReader Execute(string sql)
         {
-            List<Event> events = new List<Event>();
-            string sql = $"SELECT * FROM Events WHERE Date >= '{date.ToString("yyyy-MM-dd")}'";
-
-            // Do that db stuff
-
-            //1: make a sql connection object
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            //2: make a sqlcommand object
-
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            //3: open the connection
-
-            connection.Open();
-
-            //4: Execute Query
-            SqlDataReader reader = command.ExecuteReader();
-            //5: Read the results
-            while (reader.Read())
+            if (sql is null)
             {
-                int idFromDb = reader.GetInt32(0);
-                DateTime dateFromDb = reader.GetDateTime(1);
-                string nameFromDb = reader.GetString(2);
-                int attendeesFromDb = reader.GetInt32(3);
-                string descriptionFromDb = reader.GetString(4);
-                //List<EventRatingData> ratings = new List<EventRatingData>();
-                //nice job copiletting the code
-                Event e = new Event(idFromDb, nameFromDb, dateFromDb, attendeesFromDb, descriptionFromDb);
-
-                events.Add(e);
+                throw new ArgumentNullException(nameof(sql));
             }
-            connection.Close();
-            return events;
+
+            connection = new(connectionString);
+            SqlCommand command = new(sql, connection);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            return reader;
         }
 
-        /// <summary>
-        /// Saves a new event to the database.
-        /// </summary>
-        /// <param name="newEvent">The event to save.</param>
-        /// <returns>The ID of the newly saved event.</returns>
-        public int Save(Event newEvent)
+        public bool CanConnect()
         {
             try
             {
-                int newid = 1;
-                string sql = $"INSERT INTO Events (Date, Name, Attendees, Description) VALUES ('{newEvent.Date.ToString("yyyy-MM-dd")}', '{newEvent.Name}',{newEvent.Attendees},'{newEvent.Description}'); SELECT SCOPE_IDENTITY();";
-                // Do that db stuff
-
-                //1: make a sql connection object
-                SqlConnection connection = new SqlConnection(connectionString);
-
-                //2: make a sqlcommand object
-
-                SqlCommand command = new SqlCommand(sql, connection);
-
-                // todo: try catch block
-                //3: open the connection
-
-                connection.Open();
-                //todo: figure out how to get the id of the new record
-                //4 : execute the insert command
-                //command.ExecuteNonQuery();
-                SqlDataReader sqlDataReader = command.ExecuteReader();
-                while (sqlDataReader.Read())
-                {
-                    newid = (int)sqlDataReader.GetDecimal(0);
-                }
-
-                //5. close the connection when it is not needed anymore
-
-                connection.Close();
-
-                return newid;
+                SqlConnection sqlConnection = new(connectionString);
+                sqlConnection.Open();
+                sqlConnection.Close();
+                return true;
             }
-            catch (SqlException ex)
+            catch (Exception)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Deletes an event from the database based on the event ID.
-        /// </summary>
-        /// <param name="id">The ID of the event to delete.</param>
-        /// <returns>The number of rows affected.</returns>
-        public int Delete(int id)
-        {
-            string sql = $"DELETE FROM Events WHERE EventId = {id}";
-            int rowsAffected = 0;
-            // Do that db stuff
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    // Add parameter to the command
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    try
-                    {
-                        connection.Open();
-                        rowsAffected = command.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        // Handle the exception here
-                        Console.WriteLine("An error occurred: " + ex.Message);
-                    }
-                }
-                return rowsAffected;
-            }
-        }
-
-        /// <summary>
-        /// Updates an existing event in the database.
-        /// </summary>
-        /// <param name="updatedEvent">The updated event.</param>
-        /// <returns>The number of rows affected.</returns>
-        public int Update(Event updatedEvent)
-        {
-            string sql = $"UPDATE Events SET Date = '{updatedEvent.Date.ToString("yyyy-MM-dd")}', Name = '{updatedEvent.Name}', Attendees = {updatedEvent.Attendees}, Description = '{updatedEvent.Description}' WHERE EventId = {updatedEvent.Id}";
-            int rowsAffected = 0;
-            // Do that db stuff
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    // Add parameter to the command
-                    command.Parameters.AddWithValue("@Id", updatedEvent.Id);
-
-                    try
-                    {
-                        connection.Open();
-                        rowsAffected = command.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        // Handle the exception here
-                        Console.WriteLine("An error occurred: " + ex.Message);
-                    }
-                }
-                return rowsAffected;
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the event rating data for a specific event.
-        /// </summary>
-        /// <param name="eventId">The ID of the event.</param>
-        /// <returns>The event rating data.</returns>
-        public EventRatingData GetEventRatingDataBy(int eventId)
-        {
-            int badRatingCount = 0;
-            int neutralRatingCount = 0;
-            int goodRatingCount = 0;
-            EventRatingData eventRatingData = default;
-
-            string sql = $"EXEC CountAllowedRatingsForEvent @EventId = {eventId}";
-
-            // 1: make a SqlConnection object:
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            // 2: make a SqlCommand object:
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            // TODO: try catchify this:
-            // 3. Open the connection:
-            connection.Open();
-
-            // 4. Execute query:
-            SqlDataReader reader = command.ExecuteReader();
-
-            // 5. Retrieve data from the data reader:
-            while (reader.Read())
-            {
-                badRatingCount = Convert.ToInt32(reader["RatingId3Count"]);
-                neutralRatingCount = Convert.ToInt32(reader["RatingId2Count"]);
-                goodRatingCount = Convert.ToInt32(reader["RatingId1Count"]);
-                eventRatingData = new(badRatingCount, neutralRatingCount, goodRatingCount);
-            }
-            connection.Close();
-
-            return eventRatingData;
-        }
-
-        /// <summary>
-        /// Saves a new event rating to the database.
-        /// </summary>
-        /// <param name="newEventRating">The event rating to save.</param>
-        /// <returns>The ID of the newly saved event rating.</returns>
-        public int Save(EventRating newEventRating)
-        {
-            try
-            {
-                int newid = 1;
-                string sql = $"INSERT INTO EventRating (EventId, RatingId) VALUES ({newEventRating.EventId},{newEventRating.RatingId}); SELECT SCOPE_IDENTITY();";
-                // Do that db stuff
-
-                //1: make a sql connection object
-                SqlConnection connection = new SqlConnection(connectionString);
-
-                //2: make a sqlcommand object
-
-                SqlCommand command = new SqlCommand(sql, connection);
-
-                connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    newid = (int)reader.GetDecimal(0);
-                }
-                connection.Close();
-                return newid;
-
-            }
-
-            catch (SqlException ex)
-            {
-                Console.WriteLine("An error occurred: " + ex.Message);
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the ratings count for a specific event.
-        /// </summary>
-        /// <param name="ev">The event to retrieve ratings count for.</param>
-        /// <returns>A tuple containing the counts of each rating.</returns>
-        public (int, int, int) GetRatingsFor(Event ev)
-        {
-            // 1: make a SqlConnection object:
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            // 2: make a SqlCommand object:
-            SqlCommand command = new SqlCommand("CountAllowedRatingsForEvent", connection);
-
-            connection.Open();
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@EventId", ev.Id);
-            int ratingId1Count = 0, ratingId2Count = 0, ratingId3Count = 0;
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    ratingId1Count = Convert.ToInt32(reader["RatingId1Count"]);
-                    ratingId2Count = Convert.ToInt32(reader["RatingId2Count"]);
-                    ratingId3Count = Convert.ToInt32(reader["RatingId3Count"]);
-
-                    Console.WriteLine($"RatingId 1 count: {ratingId1Count}");
-                    Console.WriteLine($"RatingId 2 count: {ratingId2Count}");
-                    Console.WriteLine($"RatingId 3 count: {ratingId3Count}");
-                }
-                else
-                {
-                    Console.WriteLine("No data found for the specified EventId.");
-                }
-            }
-
-            return (ratingId1Count, ratingId2Count, ratingId3Count);
-        }
-
-
-        // member
-
-
-        public int AddMember(Member newMember)
-        {
-            try
-            {
-                int newid = 1;
-                string sql = $"INSERT INTO Members ( Name, PhoneNumber, Email, Date, MembershipId) VALUES ('{newMember.Name}', '{newMember.PhoneNumber}', '{newMember.Date.ToString("yyyy-MM-dd")}','{newMember.Membership}'); SELECT SCOPE_IDENTITY();";
-                // Do that db stuff
-
-                //1: make a sql connection object
-                SqlConnection connection = new SqlConnection(connectionString);
-
-                //2: make a sqlcommand object
-
-                SqlCommand command = new SqlCommand(sql, connection);
-
-                // todo: try catch block
-                //3: open the connection
-
-                connection.Open();
-                //todo: figure out how to get the id of the new record
-                //4 : execute the insert command
-                //command.ExecuteNonQuery();
-                SqlDataReader sqlDataReader = command.ExecuteReader();
-                while (sqlDataReader.Read())
-                {
-                    newid = (int)sqlDataReader.GetDecimal(0);
-                }
-
-                //5. close the connection when it is not needed anymore
-
-                connection.Close();
-
-                return newid;
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine("An error occurred: " + ex.Message);
-                return 0;
-            }
-        }
-
-        public List<Member> GetAllMembers()
-        {
-            List<Member> member = new List<Member>();
-
-            string sql = $"SELECT        dbo.Members.*, dbo.MembershipTypes.membershipType, dbo.MembershipTypes.Description\r\nFROM            dbo.Members INNER JOIN\r\n       dbo.MembershipTypes ON dbo.Members.MembershipId = dbo.MembershipTypes.MembershipId";
-
-            // 1: make a SqlConnection object:
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            // 2: make a SqlCommand object:
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            // TODO: try catchify this:
-            // 3. Open the connection:
-            connection.Open();
-
-            // 4. Execute query:
-            SqlDataReader reader = command.ExecuteReader();
-
-            // 5. Retrieve data from the data reader:
-            while (reader.Read())
-            {
-                int id = Convert.ToInt32(reader["MemberId"]);
-                string name = Convert.ToString(reader["Name"]);
-                string phoneNumber = Convert.ToString(reader["PhoneNumber"]);
-                string email = Convert.ToString(reader["Email"]);
-                DateTime date = Convert.ToDateTime(reader["Date"]);
-                Membership membership = new Membership(Convert.ToInt32(reader["MembershipId"]), Convert.ToString(reader["MembershipType"]), Convert.ToString(reader["Description"]));
-
-                Member m = new(id, name, phoneNumber, email, date, membership);
-
-                member.Add(m);
-            }
-
-            // 6. Close the connection when it is not needed anymore:
-            connection.Close();
-
-            return member;
-        }
-
-        public List<Member> GetMember(string name)
-        {
-            List<Member> member = new List<Member>();
-            string sql = $"SELECT        dbo.Members.*, dbo.MembershipTypes.membershipType, dbo.MembershipTypes.Description\r\nFROM            dbo.Members INNER JOIN\r\n       dbo.MembershipTypes ON dbo.Members.MembershipId = dbo.MembershipTypes.MembershipId WHERE Name = {name}";
-            // Do that db stuff
-
-            //1: make a sql connection object
-            SqlConnection connection = new SqlConnection(connectionString);
-
-            //2: make a sqlcommand object
-
-            SqlCommand command = new SqlCommand(sql, connection);
-
-            //3: open the connection
-
-            connection.Open();
-
-            //4: Execute Query
-            SqlDataReader reader = command.ExecuteReader();
-            //5: Read the results
-            while (reader.Read())
-            {
-
-                int idFromDb = reader.GetInt32(0);
-                string nameFromDb = reader.GetString(1);
-                string phoneNumberFromDb = reader.GetString(2);
-                string emailFromDb = reader.GetString(3);
-                DateTime dateFromDb = reader.GetDateTime(4);
-                Membership membership = new Membership(Convert.ToInt32(reader["MembershipId"]), Convert.ToString(reader["MembershipType"]), Convert.ToString(reader["Description"]));
-
-                Member m = new Member(idFromDb, nameFromDb, phoneNumberFromDb, emailFromDb, dateFromDb, membership);
-
-                member.Add(m);
-            }
-            connection.Close();
-            return member;
-        }
-        public int DeleteMember(int id)
-        {
-            string sql = $"DELETE FROM Members WHERE MemberId = {id}";
-            int rowsAffected = 0;
-            // Do that db stuff
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    // Add parameter to the command
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    try
-                    {
-                        connection.Open();
-                        rowsAffected = command.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        // Handle the exception here
-                        Console.WriteLine("An error occurred: " + ex.Message);
-                    }
-                }
-                return rowsAffected;
+                return false;
             }
         }
     }
 }
-
-

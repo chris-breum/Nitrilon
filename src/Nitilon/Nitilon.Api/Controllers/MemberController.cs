@@ -15,7 +15,7 @@ namespace Nitilon.Api.Controllers
         [HttpPost]
         public IActionResult AddMember(Member newMember)
         {
-            Repository r = new Repository();
+            MemberRepository r = new ();
             r.AddMember(newMember);
             return Ok();
         }
@@ -23,7 +23,7 @@ namespace Nitilon.Api.Controllers
         [HttpGet("all")]
         public IEnumerable<Member> GetAll()
         {
-            Repository r = new Repository();
+            MemberRepository r = new ();
             var members = r.GetAllMembers();
             return members;
         }
@@ -31,7 +31,7 @@ namespace Nitilon.Api.Controllers
         [HttpGet("{name}")]
         public IEnumerable<Member> Get(string name)
         {
-            Repository r = new Repository();
+            MemberRepository r = new ();
             var m = r.GetMember(name);
             return m;
         }
@@ -39,7 +39,7 @@ namespace Nitilon.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            Repository r = new Repository();
+            MemberRepository r = new ();
             r.DeleteMember(id);
             return Ok();
         }
