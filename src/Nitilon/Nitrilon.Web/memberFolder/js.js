@@ -11,44 +11,42 @@ fetch(APIUrl)
   });
 function createList(data) {
   const formContainer = document.querySelector("section");
-  const form = document.createElement("form");
 
-  const fragment = document.createDocumentFragment();
+  const table = document.createElement("table");
 
   data.forEach((item) => {
-    const div = document.createElement("div");
+    const row = document.createElement("tr");
 
-    const p1 = document.createElement("p");
-    p1.textContent = `Navn: ${item.name}`;
-    div.appendChild(p1);
+    const nameCell = document.createElement("td");
+    nameCell.textContent = `Name: ${item.name}`;
+    row.appendChild(nameCell);
 
-    const p2 = document.createElement("p");
-    p2.textContent = `tlf: ${item.phoneNumber}`;
-    div.appendChild(p2);
+    const phoneNumberCell = document.createElement("td");
+    phoneNumberCell.textContent = `Phone Number: ${item.phoneNumber}`;
+    row.appendChild(phoneNumberCell);
 
-    const p3 = document.createElement("p");
-    p3.textContent = `Email: ${item.email}`;
-    div.appendChild(p3);
+    const emailCell = document.createElement("td");
+    emailCell.textContent = `Email: ${item.email}`;
+    row.appendChild(emailCell);
 
-    const p4 = document.createElement("p");
-    p4.textContent = `Medlems Type: ${item.membership.membershipType}`;
-    div.appendChild(p4);
+    const membershipTypeCell = document.createElement("td");
+    membershipTypeCell.textContent = `Membership Type: ${item.membership.membershipType}`;
+    row.appendChild(membershipTypeCell);
 
+    const deleteCell = document.createElement("td");
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Fjern medlem";
     deleteButton.addEventListener("click", () => {
       // Call a function to handle the delete action
-      deleteItem(item.id);
+      deleteItem(item.memberId);
     });
-    div.appendChild(deleteButton);
+    deleteCell.appendChild(deleteButton);
+    row.appendChild(deleteCell);
 
-    fragment.appendChild(div);
+    table.appendChild(row);
   });
 
-  form.appendChild(fragment);
-
-  // Tilføj form elementet til formContainer
-  formContainer.appendChild(form);
+  formContainer.appendChild(table);
 }
 
 function deleteItem(id) {
@@ -60,9 +58,9 @@ function deleteItem(id) {
     .then((response) => response.json())
     .then((data) => {
       // Genindlæs siden
-      location.reload();
     })
     .catch((error) => {
       console.error("Fejl ved sletning af data: ", error);
     });
+  location.reload();
 }
