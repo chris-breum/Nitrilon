@@ -20,7 +20,28 @@ namespace Nitrilon.Entities
         }
 
         public int MembershipId { get => membershipId; set => membershipId = value; }
-        public string MembershipType { get => membershipType; set => membershipType = value; }
-        public string Description { get => description; set => description = value; }
+        public string MembershipType
+        {
+            get => membershipType; 
+            
+            set {
+                if (value == null)
+                {
+                    value = "Ikke sat";
+                }
+                membershipType = value;
+            }
+        }
+        public string Description { get => description; 
+            
+            set
+            {
+                if (value == null)
+                {
+                    value = "Ikke sat";
+                }
+                description = value;
+            }
+        }
     }
 }

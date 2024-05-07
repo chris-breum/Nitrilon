@@ -43,5 +43,13 @@ namespace Nitilon.Api.Controllers
             r.DeleteMember(id);
             return Ok();
         }
+
+        [HttpGet("GetMembershipTypes")]
+        public IEnumerable<Membership> GetMembershipTypes()
+        {
+            MemberRepository r = new();
+            var memberships = r.GetMembershipTypes();
+            return memberships;
+        }
     }
 }

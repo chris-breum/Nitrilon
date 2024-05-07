@@ -9,7 +9,7 @@
         private DateTime date;
         private int attendees;
         private string description;
-        private EventRatingData ratings;
+        private EventRatingData ratings;// agregation
         #endregion
 
         #region Constructors
@@ -23,7 +23,8 @@
         }
 
         public Event(int id, string name, DateTime date, int attendees, string description, EventRatingData ratings)
-            : this(id, name, date, attendees, description)
+            //overloaded constructor
+            :this(id, name, date, attendees, description)
         {
             Ratings = ratings;
         }

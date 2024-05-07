@@ -53,12 +53,12 @@ m2=1
     <coordinates>
       <x>560</x>
       <y>200</y>
-      <w>260</w>
+      <w>300</w>
       <h>200</h>
     </coordinates>
-    <panel_attributes>SimpleClass
+    <panel_attributes>EventRatig
 --
-EventRatingId : int
+EventRatingId : int{PK}
 *EventId : int {FK}*
 *RatingId : {FK}*</panel_attributes>
     <additional_attributes/>
@@ -66,15 +66,15 @@ EventRatingId : int
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>800</x>
+      <x>840</x>
       <y>200</y>
-      <w>160</w>
+      <w>120</w>
       <h>100</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=*
 m2=1
 </panel_attributes>
-    <additional_attributes>60.0;20.0;10.0;20.0</additional_attributes>
+    <additional_attributes>40.0;20.0;10.0;20.0</additional_attributes>
   </element>
 </diagram>

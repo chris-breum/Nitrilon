@@ -4,10 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <script src="js.js" defer></script>
+    <script src="Medlem.js" defer></script>
     <title>Document</title>
   </head>
   <body>
+    <header>
+      <h1>Member</h1>
+      <button id="newmemberButton">Tilføj ny member</button>
+    </header>
     <section></section>
+    <form class="newMemberForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" />
+
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone" name="phone" />
+
+      <label for="membership">Membership Type:</label>
+      <select id="membership" name="membership" required></select>
+
+      <button type="button" id="submitButton">Submit</button>
+    </form>
   </body>
 </html>

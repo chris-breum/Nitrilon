@@ -43,8 +43,13 @@ namespace Nitrilon.Entities
         }
         public string PhoneNumber { get => phoneNumber; set
             {
-                ArgumentOutOfRangeException.ThrowIfLessThan(value.Length, 8);
-                if (PhoneNumber != value)
+                
+                if(value.Length < 8)
+                {
+                    phoneNumber = "no phone number provided";
+                }
+
+               else if (PhoneNumber != value)
                 {
                     phoneNumber = value;
                 }
@@ -55,17 +60,20 @@ namespace Nitrilon.Entities
             get => email;
             set
             {
-                
-                if (IsValidEmail(value))
+                if (value == null)
                 {
-                    if (email != value)
-                    {
-                        email = value;
-                    }
+                    email = "Ingen email på denne bruger.";
+                    return;
                 }
-                else
+
+                if (!value.Contains('@'))
                 {
-                    throw new ArgumentException("Invalid email address");
+                    email = "";
+                }
+
+                if (value != email )
+                {
+                    email = value;
                 }
             }
         }
@@ -74,32 +82,30 @@ namespace Nitrilon.Entities
             get => date;
             set
             {
-                ArgumentOutOfRangeException.ThrowIfLessThan(value, EarliestPossibleEvent);
+                if (value < EarliestPossibleEvent)
+                {
+                    value = DateTime.Today;
+                }
+
                 if (date != value)
                 {
                     date = value;
                 }
             }
         }
-        public Membership Membership { get => membership; set => membership = value; }
+        public Membership Membership { get => membership; 
+            set 
+            { 
 
+                if (value == null || value.MembershipId == null) {
+                    value = new Membership(1, "Aktiv", "Basic membership");
+                }
 
-
-        private bool IsValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-
-            try
-            {
-                // Regular expression for email validation
-                var regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-                return regex.IsMatch(email);
-            }
-            catch (RegexMatchTimeoutException)
-            {
-                return false;
-            }
+                if (membership != value)
+                {
+                    membership = value;
+                }
+            } 
         }
     }
 }

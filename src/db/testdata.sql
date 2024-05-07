@@ -7,12 +7,12 @@
 --------------------------------------------------------------------------------
 
 -- Delete all data from EventRatings table
-DELETE FROM EventRating;
-DBCC CHECKIDENT ('EventRating', RESEED, 0);
+DELETE FROM EventRatings;
+DBCC CHECKIDENT ('EventRatings', RESEED, 0);
 
 -- Delete all data from Ratings table
-DELETE FROM Rating;
-DBCC CHECKIDENT ('Rating', RESEED, 0);
+DELETE FROM Ratings;
+DBCC CHECKIDENT ('Ratings', RESEED, 0);
 
 -- Delete all data from Events table
 DELETE FROM Events;
@@ -23,8 +23,8 @@ DELETE FROM Members;
 DBCC CHECKIDENT ('Members', RESEED, 0);
 
 -- Delete all data from Memberships table
-DELETE FROM MembershipTypes;
-DBCC CHECKIDENT ('MembershipTypes', RESEED, 0);
+DELETE FROM Memberships;
+DBCC CHECKIDENT ('Memberships', RESEED, 0);
 
 -------------------
 --   Variables   --
@@ -40,13 +40,13 @@ DECLARE @i INT = 1; -- Lav en variabel @i og sæt den til 1
 -------------------
 
 -- Simpelt bare indsæt de 3 ratings, da de ikke skal være tilfældige
-INSERT INTO Rating(RatingValue, Descrition) VALUES (1, 'Glad'), (2, 'Neutral'), (3, 'Sur');
+INSERT INTO Ratings(RatingValue, Description) VALUES (1, 'Glad'), (2, 'Neutral'), (3, 'Sur');
 
 -----------------------
 -- Memberships Table --
 -----------------------
 
-INSERT INTO MembershipTypes (membershipType, Description) VALUES 
+INSERT INTO Memberships (Name, Description) VALUES 
 ('Aktiv', 'Aktivt medlemskab.'), 
 ('Passiv', 'Passivt medlemskab.');
 
@@ -54,13 +54,58 @@ INSERT INTO MembershipTypes (membershipType, Description) VALUES
 -- Members Table --
 -------------------
 
-INSERT INTO Members (Name, Email, MembershipId) VALUES 
-('John Doe', 'john@doe.com', 1),
-('Jane Doe', 'jane@doe.com', 2),
-('John Smith', 'john@smith.com', 1),
-('Jane Smith', 'jane@smith.com', 2),
-('John Johnson', 'john@johnson.com', 1),
-('Jane Johnson', 'john@johnson.com', 2);
+INSERT INTO Members (Name, Email, PhoneNumber, MembershipId) VALUES
+('Kim Kardashian', 'kim-k@gmail.com', '', 1),
+('Kanye West', 'kanye-da-goat@gmail.com', '04512345679', 2),
+('Kylie Jenner', 'kylie-jenner@yahoo.mail', '04512345680', 1),
+('Elvis Parsley', 'rocknrolldiet@vegemail.com', '04512345681', 2),
+('Shania Train', 'feellikeawoman@countryhits.org', '04512345682', 1),
+('Mick Jogger', 'moveslikejagger@rockmail.com', '04512345683', 2),
+('Perry Scope', 'watchingyou@spygadgets.com', '04512345684', 1),
+('Al Pacacino', 'sayhello@woolymail.com', '', 2),
+('Tom Scruze', 'missionspossible@stuntdouble.com', '04512345686', 1),
+('Bridget Bones', 'skeletonkey@archaeologist.com', '04512345687', 2),
+('Walter Melon', 'fruitpunch@juicymail.com', '04512345688', 1),
+('Olive Yew', 'olivebranch@peaceful.org', '', 2),
+('Rusty Nails', 'constructionchaos@buildit.com', '04512345690', 1),
+('Sally Mander', 'catchingfire@reptilemail.com', '04512345691', 2),
+('Chris P. Bacon', 'smokingrills@porkmail.com', '04512345692', 1),
+('Gail Forcewind', 'blownaway@weatheralerts.org', '', 2),
+('Luke Atme', 'iseeyou@stargazer.net', '04512345694', 1),
+('Teresa Green', 'gardenlife@naturemail.com', '04512345695', 2),
+('Anne Chovie', '', '04512345696', 1),
+('Earl E. Bird', 'wormcatcher@morningmail.com', '04512345697', 2),
+('Stan Dupp', 'standfirm@uprightmail.com', '04512345698', 1),
+('Justin Thyme', 'cookingtimer@chefmail.com', '04512345699', 2),
+('Robin Banks', '', '04512345700', 1),
+('Carmen Getit', 'ontheroad@travelbug.org', '04512345701', 2),
+('Ira Fuse', 'shortcircuit@electricmail.com', '', 1),
+('Bill Board', 'adman@marketingpro.org', '04512345703', 2),
+('Paige Turner', 'flippinggreat@readerscorner.net', '04512345704', 1),
+('Mona Lott', 'speakup@publicspeaker.org', '', 2),
+('Barb Dwyer', 'barb@dwyer.co.uk', '04512345706', 1),
+('Terry Bull', 'terry@bullshop.dk', '', 2),
+('Anna Conda', 'anna@snakedealers.nk', '04512345708', 1),
+('Bill Ding', 'building-shop@gmail.com', '04512345709', 2),
+('Barry Cade', 'barry@test.com', '04512345710', 1),
+('Al Beback', 'al-beback@gmail.com', '', 2),
+('Sam Sung', 'phones4u@techmail.com', '04512345712', 1),
+('Neil Down', '', '04512345713', 2),
+('Holly Wood', 'starlight@cinemail.com', '04512345714', 1),
+('Claire Voyant', 'futuretold@psychicmail.com', '04512345715', 2),
+('Sue Yu', 'legalaction@lawmail.com', '04512345716', 1),
+('Dinah Mite', 'bigboom@explosives.com', '', 2),
+('Ray Dio', 'onair@broadcast.com', '04512345718', 1),
+('Seymour Vision', 'clearview@optics.com', '04512345719', 2),
+('Artie Choke', '', '04512345720', 1),
+('Ella Vator', 'upanddown@liftmail.com', '04512345721', 2),
+('Ivana Tinkle', 'bathroomfix@plumbingworld.com', '04512345722', 1),
+('Bea Problem', '', '', 2),
+('Pete Sake', 'forpetessake@brewery.com', '04512345724', 1),
+('Ray Zorbills', 'cutcosts@financemail.com', '04512345725', 2),
+('Lois Price', 'bargainhunt@discountmail.com', '', 1),
+('Colin Allcars', 'vehicletracking@automail.com', '04512345727', 2);
+
 
 ------------------
 -- Events Table --
@@ -96,19 +141,19 @@ END
 ------------------------
 
 SET @i = 0;
-while @i < 69420 -- Generer 4000 event ratings
+while @i < 4000 -- Generer 4000 event ratings
 BEGIN 
     -- EventId er sat til at køre igennem 1 til 10
     -- RatingId kører igennem 1 til 3
     SET @Random = RAND();
 
     -- Modulus 24 for at skabe en god spredning af vores ratings.
-    IF @Random < 0.33
-        INSERT INTO EventRating (EventId, RatingId) VALUES ((@i % 24) + 1, 1);
-    IF @Random >= 0.33 AND @Random < 0.66
-		INSERT INTO EventRating (EventId, RatingId) VALUES ((@i % 24) + 1, 2);
-    IF @Random >= 0.66
-        INSERT INTO EventRating (EventId, RatingId) VALUES ((@i % 24) + 1, 3);
+    IF @Random < 0.17
+        INSERT INTO EventRatings (EventId, RatingId) VALUES ((@i % 24) + 1, 1);
+    IF @Random >= 0.17 AND @Random < 0.54
+		INSERT INTO EventRatings (EventId, RatingId) VALUES ((@i % 24) + 1, 2);
+    IF @Random >= 0.54
+        INSERT INTO EventRatings (EventId, RatingId) VALUES ((@i % 24) + 1, 3);
 
     SET @i = @i + 1;
 END

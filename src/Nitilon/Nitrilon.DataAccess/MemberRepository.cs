@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Nitrilon.Entities;
+using System.Text.RegularExpressions;
 
 namespace Nitrilon.DataAccess
 {
@@ -9,13 +10,32 @@ namespace Nitrilon.DataAccess
         {
 
         }
+        public bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Regular expression for email validation
+                var regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+                return regex.IsMatch(email);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
 
         public int AddMember(Member newMember)
         {
             try
             {
                 int newid = 1;
-                string sql = $"INSERT INTO Members ( Name, PhoneNumber, Email, Date, MembershipId) VALUES ('{newMember.Name}', '{newMember.PhoneNumber}', '{newMember.Date.ToString("yyyy-MM-dd")}','{newMember.Membership}'); SELECT SCOPE_IDENTITY();";
+               
+                string sql = $"INSERT INTO Members ( Name, PhoneNumber, Email,  MembershipId) VALUES ('{newMember.Name}', '{newMember.PhoneNumber}','{newMember.Email}','{newMember.Membership.MembershipId}'); SELECT SCOPE_IDENTITY();";
+                
+
                 // Do that db stuff
 
                
@@ -121,6 +141,28 @@ namespace Nitrilon.DataAccess
                 }
             }
             return rowsAffected;
+        }
+        public List<Membership> GetMembershipTypes()
+        {
+            List<Membership> membership = new();
+            string sql = $"SELECT * FROM MembershipTypes";
+            // Do that db stuff
+
+            // Execute Query
+            SqlDataReader reader = Execute(sql);
+            // Read the results
+            while (reader.Read())
+            {
+                int membershipId = Convert.ToInt32(reader["MembershipId"]);
+                string membershipType = Convert.ToString(reader["MembershipType"]);
+                string description = Convert.ToString(reader["Description"]);
+
+                Membership m = new(membershipId, membershipType, description);
+
+                membership.Add(m);
+            }
+            CloseConnection();
+            return membership;
         }
     }
 }

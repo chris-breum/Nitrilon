@@ -8,13 +8,37 @@ body {
   font-family: "Arial", sans-serif;
   background-color: #43494a;
 }
+body.no-scroll {
+  overflow: hidden;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  position: absolute;
+  top: 5px;
+  width: 100%;
+}
+header button {
+  margin: 1vh;
+  padding: 1vh;
+  border: none;
+  border-radius: 10px;
+  background-color: #29d529;
+  color: #43494a;
+  font-size: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 81%;
+}
 
 section {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 94vh;
-  margin-top: 3vh;
+  margin-top: 6vh;
   margin-bottom: 3vh;
 }
 
@@ -58,4 +82,22 @@ table tr button {
 
 form button:hover {
   background-color: #45a049;
+}
+
+.newMemberForm {
+  flex-direction: column;
+  gap: 1em;
+  width: 60%;
+  background-color: #43494a;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(140, 150, 200, 0.3);
+  display: none;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.newMemberForm.show {
+  display: flex;
 }
